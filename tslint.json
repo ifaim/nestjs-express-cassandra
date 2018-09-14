@@ -5,14 +5,26 @@
     ],
     "jsRules": {},
     "rules": {
-        "quotemark": [true, "single", "avoid-escape"],
+        "quotemark": [
+            true,
+            "single",
+            "avoid-escape"
+        ],
         "object-literal-sort-keys": false,
-        "ordered-imports": [true, {
-            "import-sources-order": "any",
-            "named-imports-order": "any"
-        }],
-        "no-console": [false],
-        "interface-name": [true, "never-prefix"],
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "any",
+                "named-imports-order": "any"
+            }
+        ],
+        "no-console": [
+            false
+        ],
+        "interface-name": [
+            true,
+            "never-prefix"
+        ],
         "eofline": false,
         "linebreak-style": [
             false
@@ -31,6 +43,9 @@
             false
         ],
         "array-type": [
+            false
+        ],
+        "arrow-parens": [
             false
         ]
     },
