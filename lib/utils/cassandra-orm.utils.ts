@@ -3,7 +3,7 @@ import { delay, retryWhen, scan } from 'rxjs/operators';
 import { Logger } from '@nestjs/common';
 
 export function handleRetry(
-  retryAttempts = 9,
+  retryAttempts = 6,
   retryDelay = 3000,
 ): <T>(source: Observable<T>) => Observable<T> {
   return <T>(source: Observable<T>) =>
@@ -14,10 +14,10 @@ export function handleRetry(
             Logger.error(
               `Unable to connect to the database. Retrying (${errorCount +
                 1})...`,
-              error.stack,
+              '',
               'ExpressCassandraModule',
             );
-            if (errorCount + 1 > retryAttempts) {
+            if (errorCount + 1 >= retryAttempts) {
               throw error;
             }
             return errorCount + 1;
@@ -32,7 +32,7 @@ export function getConnectionToken(
   connection: any | string = 'default',
 ): string | Function {
   return 'default' === connection
-    ? connection
+    ? `${connection}Connection`
     : 'string' === typeof connection
       ? `${connection}Connection`
       : 'default' === connection.name || !connection.name

@@ -1,5 +1,5 @@
 import { getAttributes, getOptions } from './decorator.utils';
-import { Entity, Column } from '../decorators';
+import { doBatchAsync as doBatch } from 'express-cassandra';
 
 export function loadModel(client, entity): Promise<any> {
   const schema = getSchema(entity);
@@ -25,25 +25,6 @@ export function getSchema(entity) {
   return model;
 }
 
-@Entity({
-  table_name: 'test',
-  key: ['id'],
-})
-export class Test {
-  @Column({
-    type: 'uuid',
-    default: { $db_function: 'uuid()' },
-  })
-  id: any;
-
-  @Column({
-    type: 'text',
-  })
-  name: string;
-
-  @Column({
-    type: 'date',
-    default: () => new Date(),
-  })
-  time: Date;
+export function doBatchAsync(queries: string[]): Promise<any> {
+  return doBatch(queries);
 }

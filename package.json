@@ -12,8 +12,9 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:ifaim/nestjs-express-cassandra.git"
   },
+  "homepage": "https://github.com/ifaim/nestjs-express-cassandra",
   "peerDependencies": {
     "@nestjs/common": "^5.3.2",
     "@nestjs/core": "^5.3.2",

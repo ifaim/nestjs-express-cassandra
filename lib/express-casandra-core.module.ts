@@ -1,12 +1,19 @@
-import { DynamicModule, Module, Global, Provider } from '@nestjs/common';
+import {
+  DynamicModule,
+  Module,
+  Global,
+  Provider,
+  Logger,
+} from '@nestjs/common';
 import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
   ExpressCassandraOptionsFactory,
 } from './interfaces';
 import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constact';
-import { getConnectionToken } from './utils/cassandra-orm.utils';
+import { getConnectionToken, handleRetry } from './utils/cassandra-orm.utils';
 import { createClient } from 'express-cassandra';
+import { defer } from 'rxjs';
 
 @Global()
 @Module({})
@@ -17,13 +24,13 @@ export class ExpressCassandraCoreModule {
       useValue: options,
     };
     const connectionProvider = {
-      provide: getConnectionToken(options),
+      provide: getConnectionToken(),
       useFactory: async () => this.createConnectionFactory(options),
     };
     return {
       module: ExpressCassandraCoreModule,
       providers: [expressModuleOptions, connectionProvider],
-      exports: [connectionProvider],
+      exports: [connectionProvider, expressModuleOptions],
     };
   }
 
@@ -31,8 +38,9 @@ export class ExpressCassandraCoreModule {
     options: ExpressCassandraModuleAsyncOptions,
   ): DynamicModule {
     const connectionProvider = {
-      provide: getConnectionToken(options),
-      useFactory: async ormOptions => this.createConnectionFactory(options),
+      provide: getConnectionToken(),
+      useFactory: async (ormOptions: ExpressCassandraModuleOptions) =>
+        this.createConnectionFactory(ormOptions),
       inject: [EXPRESS_CASSANDRA_MODULE_OPTIONS],
     };
     const asyncProviders = this.createAsyncProviders(options);
@@ -40,7 +48,7 @@ export class ExpressCassandraCoreModule {
       module: ExpressCassandraCoreModule,
       imports: options.imports,
       providers: [...asyncProviders, connectionProvider],
-      exports: [connectionProvider],
+      exports: [connectionProvider, ...asyncProviders],
     };
   }
 
