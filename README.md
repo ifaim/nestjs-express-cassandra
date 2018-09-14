@@ -35,7 +35,17 @@ $ npm i --save @iaminfinity/express-cassandra express-cassandra
 ```
 ## Usage
 
-Import ``:
+Import `ExpressCassandraModule`:
+
+```typescript
+@Module({
+  imports: [
+    ExpressCassandraModule.forRoot({...})
+  ],
+  providers: [...]
+})
+export class AppModule {}
+```
 
 ## Async options
 
@@ -44,29 +54,105 @@ Quite often you might want to asynchronously pass your module options instead of
 **1. Use factory**
 
 ```typescript
+ExpressCassandraModule.forRootAsync({
+  useFactory: () => ({...}),
+})
 ```
 
 Obviously, our factory behaves like every other one (might be `async` and is able to inject dependencies through `inject`).
 
 ```typescript
+ExpressCassandraModule.forRootAsync({
+  imports: [ConfigModule],
+  useFactory: (configService: ConfigService) => configService.getDbConfig(),
+  inject: [ConfigService],
+})
 ```
 
 **2. Use class**
 
 ```typescript
+ExpressCassandraModule.forRootAsync({
+  useClass: ConfigService,
+})
 ```
 
-Above construction will instantiate `` inside `` and will leverage it to create options objec
+Above construction will instantiate `ConfigService` inside `ExpressCassandraModule` and will leverage it to create options object.
 
 ```typescript
+class ConfigService implements ExpressCassandraOptionsFactory {
+  createExpressCassandraOptions(): ExpressCassandraModuleOptions {
+    return {...};
+  }
+}
 ```
 
 **3. Use existing**
 
 ```typescript
+ExpressCassandraModule.forRootAsync({
+  imports: [ConfigModule],
+  useExisting: ConfigService
+})
 ```
 
-It works the same as `useClass` with one critical difference - `` will lookup imported modules to reuse already created ConfigService, instead of instantiating it on its own.
+It works the same as `useClass` with one critical difference - `ExpressCassandraModule` will lookup imported modules to reuse already created ConfigService, instead of instantiating it on its own.
+
+## ORM Options
+
+```typescript
+import { Entity, Column } from '@iaminfinity/express-cassandra';
+
+@Entity({
+  table_name: 'photo',
+  key: ['id'],
+})
+export class PhotoEntity {
+  @Column({
+    type: 'uuid',
+    default: { $db_function: 'uuid()' },
+  })
+  id: any;
+
+  @Column({
+    type: 'text',
+  })
+  name: string;
+}
+```
+
+Let's have a look at the `PhotoModule`
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ExpressCassandraModule } from '@iaminfinity/express-cassandra';
+import { PhotoService } from './photo.service';
+import { PhotoController } from './photo.controller';
+import { PhotoEntity } from './photo.entity';
+
+@Module({
+  imports: [ExpressCassandraModule.forFeature([PhotoEntity])],
+  providers: [PhotoService],
+  controllers: [PhotoController],
+})
+export class PhotoModule {}
+```
+
+This module uses `forFeature()` method to define which entities shall be registered in the current scope. Thanks to that we can inject the `PhotoEntity` to the `PhotoService` using the `@InjectModel()` decorator:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+
+@Injectable()
+export class PersonService {
+  constructor(
+    @InjectModel(PhotoEntity)
+    private readonly photoEntity: any
+  ) {}
+}
+```
 
 ## Stay in touch
 

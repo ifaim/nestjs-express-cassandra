@@ -32,13 +32,6 @@
         ],
         "array-type": [
             false
-        ],
-        "trailing-comma": [
-            true,
-            {
-                "multiline": "never",
-                "singleline": "never"
-            }
         ]
     },
     "rulesDirectory": []
