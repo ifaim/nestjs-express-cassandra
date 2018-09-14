@@ -1,0 +1,60 @@
+{
+  "name": "@iaminfinity/express-cassandra",
+  "version": "0.1.1",
+  "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
+  "author": "Fahim Rahman",
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "precommit": "lint-staged",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^5.3.2",
+    "@nestjs/core": "^5.3.2",
+    "express-cassandra": "^2.2.3",
+    "reflect-metadata": "0.1.12",
+    "rxjs": "^6.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^5.3.2",
+    "@nestjs/core": "^5.3.2",
+    "@types/node": "^7.0.41",
+    "express-cassandra": "^2.2.3",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0",
+    "prettier": "^1.11.1",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.3.2",
+    "typescript": "^2.4.2"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "@types/cassandra-driver": "^3.4.0",
+    "cassandra-driver": "^3.5.0"
+  },
+  "keywords": [
+    "nestjs",
+    "cassandra",
+    "apache-cassandra",
+    "datastax",
+    "orm",
+    "express-cassandra",
+    "node",
+    "nodejs",
+    "javascript"
+  ],
+  "engines": {
+    "node": ">=4.2.4"
+  }
+}
