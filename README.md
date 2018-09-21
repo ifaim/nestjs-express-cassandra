@@ -142,15 +142,19 @@ This module uses `forFeature()` method to define which entities shall be registe
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@iaminfinity/express-cassandra';
+import { InjectModel, BaseModel } from '@iaminfinity/express-cassandra';
 import { PhotoEntity } from './photo.entity';
 
 @Injectable()
 export class PersonService {
   constructor(
     @InjectModel(PhotoEntity)
-    private readonly photoEntity: any
+    private readonly photoEntity: BaseModel<PhotoEntity>
   ) {}
+
+  getByName(name: string): Promise<PhotoEntity> {
+    return this.photoEntity.findOneAsync({ name: 'somename' }, { raw: true });
+  }
 }
 ```
 
