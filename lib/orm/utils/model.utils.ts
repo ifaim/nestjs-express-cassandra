@@ -1,5 +1,4 @@
 import { getAttributes, getOptions } from './decorator.utils';
-import { doBatchAsync as doBatch } from 'express-cassandra';
 
 export function loadModel(client, entity): Promise<any> {
   const schema = getSchema(entity);
@@ -23,8 +22,4 @@ export function getSchema(entity) {
   const model = { ...options };
   model.fields = { ...attributes };
   return model;
-}
-
-export function doBatchAsync(queries: string[]): Promise<any> {
-  return doBatch(queries);
 }

@@ -51,6 +51,10 @@ export interface FindQueryOptionsStatic<T = any> {
   fetchSize?: number;
 
   pageState?: string;
+
+  raw?: boolean;
+
+  [index: string]: any;
 }
 
 export type FindQuery<T> = { [P in keyof T]?: T[P] | FindSubQueryStatic } &

@@ -15,11 +15,8 @@ export class ExpressCassandraModule {
     };
   }
 
-  static forFeature(
-    entities: Function[],
-    connection?: string | any,
-  ): DynamicModule {
-    const providers = createExpressCassandraProviders(entities, connection);
+  static forFeature(entities: Function[]): DynamicModule {
+    const providers = createExpressCassandraProviders(entities);
     return {
       module: ExpressCassandraModule,
       providers,
