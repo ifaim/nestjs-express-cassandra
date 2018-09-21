@@ -9,5 +9,6 @@ export interface ClientOptionsStatic {
     };
     migration?: 'safe' | 'alter' | 'drop';
     createKeyspace?: boolean;
+    disableTTYConfirmation?: boolean;
   };
 }

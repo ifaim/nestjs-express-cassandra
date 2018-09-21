@@ -13,7 +13,6 @@ import {
 import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constact';
 import { getConnectionToken, handleRetry } from './utils/cassandra-orm.utils';
 import { createClient } from 'express-cassandra';
-import { defer } from 'rxjs';
 
 @Global()
 @Module({})
@@ -24,7 +23,7 @@ export class ExpressCassandraCoreModule {
       useValue: options,
     };
     const connectionProvider = {
-      provide: getConnectionToken(),
+      provide: getConnectionToken(options),
       useFactory: async () => this.createConnectionFactory(options),
     };
     return {
@@ -38,7 +37,7 @@ export class ExpressCassandraCoreModule {
     options: ExpressCassandraModuleAsyncOptions,
   ): DynamicModule {
     const connectionProvider = {
-      provide: getConnectionToken(),
+      provide: getConnectionToken(options),
       useFactory: async (ormOptions: ExpressCassandraModuleOptions) =>
         this.createConnectionFactory(ormOptions),
       inject: [EXPRESS_CASSANDRA_MODULE_OPTIONS],
