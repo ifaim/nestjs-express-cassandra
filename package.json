@@ -1,6 +1,6 @@
 {
   "name": "@iaminfinity/express-cassandra",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
   "author": "Fahim Rahman",
   "license": "MIT",
@@ -25,14 +25,14 @@
   "devDependencies": {
     "@nestjs/common": "^5.3.2",
     "@nestjs/core": "^5.3.2",
-    "@types/node": "^7.0.41",
+    "@types/node": "^10.10.2",
     "express-cassandra": "^2.2.3",
     "husky": "^0.14.3",
     "lint-staged": "^7.3.0",
     "prettier": "^1.14.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.2",
-    "typescript": "^2.4.2"
+    "typescript": "^3.0.3"
   },
   "lint-staged": {
     "*.ts": [
