@@ -2,7 +2,11 @@
   "name": "@iaminfinity/express-cassandra",
   "version": "0.2.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
-  "author": "Fahim Rahman",
+  "author": {
+    "name": "Fahim Rahman",
+    "email": "faim.sust@gmail.com",
+    "url": "https://github.com/ifaim"
+  },
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
