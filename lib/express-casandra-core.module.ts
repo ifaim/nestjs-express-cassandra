@@ -1,16 +1,10 @@
-import {
-  DynamicModule,
-  Module,
-  Global,
-  Provider,
-  Logger,
-} from '@nestjs/common';
+import { DynamicModule, Module, Global, Provider } from '@nestjs/common';
 import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
   ExpressCassandraOptionsFactory,
 } from './interfaces';
-import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constact';
+import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constant';
 import { getConnectionToken, handleRetry } from './utils/cassandra-orm.utils';
 import { createClient } from 'express-cassandra';
 

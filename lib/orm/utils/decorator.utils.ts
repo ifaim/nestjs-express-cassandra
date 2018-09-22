@@ -1,5 +1,18 @@
 import 'reflect-metadata';
-import { ENTITY_NAME_KEY, ATTRUBUTE_KEY, OPTIONS_KEY } from '../orm.constant';
+import {
+  ENTITY_NAME_KEY,
+  ATTRUBUTE_KEY,
+  OPTIONS_KEY,
+  ENTITY_METADATA,
+} from '../orm.constant';
+
+export function setEntity(target: any, entity: Function): void {
+  Reflect.defineMetadata(ENTITY_METADATA, entity, target);
+}
+
+export function getEntity(target: any): Function {
+  return Reflect.getMetadata(ENTITY_METADATA, target);
+}
 
 export function setEntityName(target: any, modelName: string): void {
   Reflect.defineMetadata(ENTITY_NAME_KEY, modelName, target);
