@@ -3,6 +3,7 @@ import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { ClientOptionsStatic } from './express-cassandra-client-options.interface';
 
 export type ExpressCassandraModuleOptions = {
+  name?: string;
   retryAttempts?: number;
   retryDelay?: number;
 } & Partial<ClientOptionsStatic>;
@@ -15,6 +16,7 @@ export interface ExpressCassandraOptionsFactory {
 
 export interface ExpressCassandraModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
+  name?: string;
   useExisting?: Type<ExpressCassandraOptionsFactory>;
   useClass?: Type<ExpressCassandraOptionsFactory>;
   useFactory?: (

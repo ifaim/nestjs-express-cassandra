@@ -20,6 +20,20 @@ export interface BaseModel<T = any> {
   deleteAsync(query: FindQuery<T>, options?): Promise<T | any>;
 
   truncateAsync(): Promise<any>;
+
+  stream(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T>,
+    reader: (reader) => void,
+    done: (err: Error) => void,
+  ): void;
+
+  eachRow(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T>,
+    onRow: (n, row) => void,
+    done: (err: Error, result: any) => void,
+  ): void;
 }
 
 export interface BaseModelStatic<T> {
@@ -109,4 +123,8 @@ export interface UpdateOptionsStatic<T> {
   if_exists?: boolean;
 
   conditions?: { [P in keyof T]?: T[P] };
+}
+
+export interface DeleteOptionsStatic {
+  if_exists?: boolean;
 }
