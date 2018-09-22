@@ -153,7 +153,64 @@ export class PersonService {
   ) {}
 
   getByName(name: string): Promise<PhotoEntity> {
-    return this.photoEntity.findOneAsync({ name: 'somename' }, { raw: true });
+    return this.photoEntity.findOneAsync({ name: name }, { raw: true });
+  }
+}
+```
+
+## Using Repository
+
+Let's create a repository:
+
+```typescript
+import { Repository, EntityRepository } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+import { Observable } from 'rxjs';
+
+@EntityRepository(PhotoEntity)
+export class PhotoRepository extends Repository<PhotoEntity> {
+  findById(id: any): Observable<PhotoEntity> {
+    return this.findOne({ id: id }, { raw: true });
+  }
+}
+```
+
+Let's have a look at the `PhotoModule`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ExpressCassandraModule } from '@iaminfinity/express-cassandra';
+import { PhotoService } from './photo.service';
+import { PhotoController } from './photo.controller';
+import { PhotoEntity } from './photo.entity';
+import { PhotoRepository } from './photo.repository';
+
+@Module({
+  imports: [ExpressCassandraModule.forFeature([PhotoEntity, PhotoRepository])],
+  providers: [PhotoService],
+  controllers: [PhotoController],
+})
+export class PhotoModule {}
+```
+
+Now let's use `PhotoRepository` in `PhotoService`:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+import { PhotoRepository } from './photo.repository';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class PersonService {
+  constructor(
+    @InjectRepository(PhotoRepository)
+    private readonly photoRepository: PhotoRepository,
+  ) {}
+
+  getById(id: id): Observable<PhotoEntity> {
+    return this.photoRepository.findById(id);
   }
 }
 ```
