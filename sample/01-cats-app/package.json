@@ -1,8 +1,13 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "01-cats-apps",
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Express cassandra example app",
   "license": "MIT",
+  "author": {
+    "name": "Fahim Rahman",
+    "email": "faim.sust@gmail.com",
+    "url": "https://github.com/ifaim"
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
@@ -11,8 +16,7 @@
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest"
   },
   "dependencies": {
     "@iaminfinity/express-cassandra": "^0.2.0",
