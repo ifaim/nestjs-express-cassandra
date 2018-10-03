@@ -1,7 +1,7 @@
 import { ClientOptions } from 'cassandra-driver';
 
 export interface ClientOptionsStatic {
-  clientOptions: ClientOptions;
+  clientOptions: ClientOptions & Partial<ElasticSearchClientOptionsStatic>;
   ormOptions: {
     defaultReplicationStrategy?: {
       class?: 'SimpleStrategy' | 'NetworkTopologyStrategy';
@@ -10,5 +10,14 @@ export interface ClientOptionsStatic {
     migration?: 'safe' | 'alter' | 'drop';
     createKeyspace?: boolean;
     disableTTYConfirmation?: boolean;
+    manageESIndex?: boolean;
+  };
+}
+
+export interface ElasticSearchClientOptionsStatic {
+  elasticsearch: {
+    host?: string;
+    apiVersion?: string;
+    sniffOnStart?: boolean;
   };
 }

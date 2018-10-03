@@ -81,6 +81,7 @@ export class ExpressCassandraCoreModule {
   private static async createConnectionFactory(
     options: ExpressCassandraModuleOptions,
   ): Promise<any> {
-    return await createClient(options);
+    const { name, retryAttempts, retryDelay, ...cassandraOptions } = options;
+    return await createClient(cassandraOptions);
   }
 }
