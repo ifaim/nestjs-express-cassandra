@@ -19,7 +19,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@iaminfinity/express-cassandra": "^0.2.0",
+    "@iaminfinity/express-cassandra": "^0.2.1",
     "@nestjs/common": "^5.3.0",
     "@nestjs/core": "^5.3.0",
     "@nestjs/microservices": "^5.3.0",
