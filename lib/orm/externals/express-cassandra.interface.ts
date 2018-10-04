@@ -34,6 +34,19 @@ export interface BaseModel<T = any> {
     onRow: (n, row) => void,
     done: (err: Error, result: any) => void,
   ): void;
+
+  search(
+    options: EsSearchOptionsStatic,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  get_es_client(): any;
+
+  get_keyspace_name(): string;
+
+  get_table_name(): string;
+
+  [index: string]: any;
 }
 
 export interface BaseModelStatic<T> {
@@ -49,6 +62,8 @@ export interface BaseModelStatic<T> {
   isModify(key?: keyof T): boolean;
 
   toJSON(): T;
+
+  [index: string]: any;
 }
 
 export interface FindQueryOptionsStatic<T = any> {
@@ -127,4 +142,22 @@ export interface UpdateOptionsStatic<T> {
 
 export interface DeleteOptionsStatic {
   if_exists?: boolean;
+}
+
+export interface EsSearchOptionsStatic {
+  q?: string;
+
+  from?: number;
+
+  size?: number;
+
+  sort?: string[];
+
+  body?: {
+    query?: any;
+
+    [index: string]: any;
+  };
+
+  [index: string]: any;
 }

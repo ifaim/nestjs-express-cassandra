@@ -15,6 +15,12 @@ export interface EntityOptions<T = any> {
 
   methods?: { [index: string]: Function };
 
+  es_index_mapping?: {
+    discover?: string;
+
+    properties?: EsIndexPropertiesOptionsStatic<T>;
+  };
+
   [index: string]: any;
 }
 
@@ -53,3 +59,7 @@ interface CustomIndexOptions {
 
   options: any;
 }
+
+type EsIndexPropertiesOptionsStatic<T> = {
+  [P in keyof T]?: { type?: string; index?: string }
+};
