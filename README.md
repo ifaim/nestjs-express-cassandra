@@ -26,7 +26,7 @@
 
 ## Description
 
-Express Cassandra utilities module for [Nest](https://github.com/nestjs/nest) based on the [express-cassandra](https://github.com/masumsoft/express-cassandra) package.
+Express Cassandra utilities module for [NestJS](https://github.com/nestjs/nest) based on the [express-cassandra](https://github.com/masumsoft/express-cassandra) package.
 
 ## Installation
 
@@ -211,6 +211,99 @@ export class PersonService {
 
   getById(id: id): Observable<PhotoEntity> {
     return this.photoRepository.findById(id);
+  }
+}
+```
+
+## Using Elassandra
+Express cassandra support `Elassandra`. For more details [see](https://express-cassandra.readthedocs.io/en/stable/elassandra/).
+
+```typescript
+@Module({
+  imports: [
+    ExpressCassandraModule.forRoot({
+      clientOptions: {
+        // omitted other options for clarity
+      },
+      ormOptions: {
+        // omitted other options for clarity
+        migration: 'alter',
+        manageESIndex: true,
+      }
+    })
+  ],
+  providers: [...]
+})
+export class AppModule {}
+```
+
+```typescript
+import { Entity, Column } from '@iaminfinity/express-cassandra';
+
+@Entity<PhotoEntity>({
+  table_name: 'photo',
+  key: ['id'],
+  es_index_mapping: {
+    discover: '.*',
+    properties: {
+      name : {
+        type : 'string',
+        index : 'analyzed',
+      },
+    },
+  }
+})
+export class PhotoEntity {
+  @Column({
+    type: 'uuid',
+    default: { $db_function: 'uuid()' },
+  })
+  id: any;
+
+  @Column({
+    type: 'text',
+  })
+  name: string;
+}
+```
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ExpressCassandraModule } from '@iaminfinity/express-cassandra';
+import { PhotoService } from './photo.service';
+import { PhotoController } from './photo.controller';
+import { PhotoEntity } from './photo.entity';
+
+@Module({
+  imports: [ExpressCassandraModule.forFeature([PhotoEntity])],
+  providers: [PhotoService],
+  controllers: [PhotoController],
+})
+export class PhotoModule {}
+```
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectModel, BaseModel } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+
+@Injectable()
+export class PersonService {
+  constructor(
+    @InjectModel(PhotoEntity)
+    private readonly photoEntity: BaseModel<PhotoEntity>
+  ) {}
+
+  searchName(name: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.catModel.search({ q: `name:${name}` }, (err, response) => {
+        if (err) {
+          return reject(err);
+        } else {
+          return response(response);
+        }
+      });
+    });
   }
 }
 ```

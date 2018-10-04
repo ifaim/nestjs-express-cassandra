@@ -40,6 +40,12 @@ export interface BaseModel<T = any> {
     callback?: (err: Error, response?: any) => void,
   ): void;
 
+  get_es_client(): any;
+
+  get_keyspace_name(): string;
+
+  get_table_name(): string;
+
   [index: string]: any;
 }
 
