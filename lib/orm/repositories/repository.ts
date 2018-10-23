@@ -14,47 +14,53 @@ import { types } from 'cassandra-driver';
  * Express cassandra repository.
  * @export
  * @class Repository
- * @template T
+ * @template Entity
  */
-export class Repository<T = any> {
-  readonly entity: BaseModel<T>;
+export class Repository<Entity = any> {
+  readonly entity: BaseModel<Entity>;
 
-  findOne(
-    query: FindQuery<T>,
-    options?: FindQueryOptionsStatic<T>,
-  ): Observable<T>;
+  findOne<T extends Partial<Entity>>(
+    query: FindQuery<Entity>,
+    options?: FindQueryOptionsStatic<Entity>,
+  ): Observable<T | undefined>;
 
   findOne(query = {}, options?) {
     return from(this.entity.findOneAsync(query, options));
   }
 
   find(
-    query: FindQuery<T>,
-    options?: FindQueryOptionsStatic<T>,
-  ): Observable<T[]>;
+    query: FindQuery<Entity>,
+    options?: FindQueryOptionsStatic<Entity>,
+  ): Observable<Entity[]>;
 
   find(query: any = {}, options?: any) {
     return from(this.entity.findAsync(query, options));
   }
 
-  save(entity: T, options?: SaveOptionsStatic): Observable<T>;
+  save(
+    entity: Partial<Entity>,
+    options?: SaveOptionsStatic,
+  ): Observable<Entity>;
 
-  save(entity: T, options?) {
+  save(entity: Entity, options?) {
     const model = new this.entity(entity);
     return defer(() => model.saveAsync(options)).pipe(map(() => model));
   }
 
   update(
-    query: FindQuery<T>,
-    updateValue: Partial<T>,
-    options?: UpdateOptionsStatic<T>,
+    query: FindQuery<Entity>,
+    updateValue: Partial<Entity>,
+    options?: UpdateOptionsStatic<Entity>,
   ): Observable<any>;
 
   update(query = {}, updateValue, options?: any) {
     return from(this.entity.updateAsync(query, updateValue, options));
   }
 
-  delete(query: FindQuery<T>, options?: DeleteOptionsStatic): Observable<any>;
+  delete(
+    query: FindQuery<Entity>,
+    options?: DeleteOptionsStatic,
+  ): Observable<any>;
 
   delete(query = {}, options?) {
     return from(this.entity.deleteAsync(query, options));
@@ -65,8 +71,8 @@ export class Repository<T = any> {
   }
 
   stream(
-    query: FindQuery<T>,
-    options?: FindQueryOptionsStatic<T>,
+    query: FindQuery<Entity>,
+    options?: FindQueryOptionsStatic<Entity>,
   ): Observable<types.ResultSet> {
     const reader$ = new Subject<any>();
 
@@ -92,8 +98,8 @@ export class Repository<T = any> {
   }
 
   eachRow(
-    query: FindQuery<T>,
-    options?: FindQueryOptionsStatic<T>,
+    query: FindQuery<Entity>,
+    options?: FindQueryOptionsStatic<Entity>,
   ): EachRowArgument {
     const reader$ = new Subject<any>();
     const done$ = new Subject<any>();

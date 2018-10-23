@@ -6,7 +6,7 @@ export * from './express-cassandra.module';
 export * from './utils/express-cassandra.decorator';
 export * from './orm';
 
-export { types };
+export * from 'cassandra-driver';
 
 export function uuid(id?): types.Uuid {
   if (!id) {
