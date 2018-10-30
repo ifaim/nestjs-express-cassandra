@@ -46,6 +46,54 @@ export interface BaseModel<T = any> {
 
   get_table_name(): string;
 
+  createVertex<R>(
+    entity: Partial<T | R>,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  getVertex(id: any, callback?: (err: Error, response?: any) => void): void;
+
+  updateVertex<R>(
+    id: any,
+    updateEntity: Partial<T | R>,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  deleteVertex(id: any, callback?: (err: Error) => void): void;
+
+  createEdge(
+    relation: string,
+    followerVertexId: any,
+    followeeVertexId: any,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  createEdge(
+    relation: string,
+    followerVertexId: any,
+    followeeVertexId: any,
+    model: any,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  getEdge(id: any, callback?: (err: Error, response?: any) => void): void;
+
+  updateEdge(
+    id: any,
+    updateModel: any,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  deleteEdge(id: any, callback?: (err: Error) => void): void;
+
+  graphQuery<R>(
+    query: string,
+    entityQuery: Partial<T | R>,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  get_gremlin_client(): GremlinClientStatic<T>;
+
   [index: string]: any;
 }
 
@@ -158,6 +206,16 @@ export interface EsSearchOptionsStatic {
 
     [index: string]: any;
   };
+
+  [index: string]: any;
+}
+
+interface GremlinClientStatic<TEntity = any> {
+  execute<T>(
+    query: string,
+    entityQuery: Partial<TEntity | T>,
+    callback?: (err: Error, response?: any) => void,
+  ): void;
 
   [index: string]: any;
 }
