@@ -1,7 +1,9 @@
 import { ClientOptions } from 'cassandra-driver';
 
 export interface ClientOptionsStatic {
-  clientOptions: ClientOptions & Partial<ElasticSearchClientOptionsStatic>;
+  clientOptions: ClientOptions &
+    Partial<ElasticSearchClientOptionsStatic> &
+    Partial<GreminServerClientOptionsStatic>;
   ormOptions: {
     defaultReplicationStrategy?: {
       class?: 'SimpleStrategy' | 'NetworkTopologyStrategy';
@@ -11,6 +13,7 @@ export interface ClientOptionsStatic {
     createKeyspace?: boolean;
     disableTTYConfirmation?: boolean;
     manageESIndex?: boolean;
+    manageGraphs?: boolean;
   };
 }
 
@@ -19,5 +22,16 @@ export interface ElasticSearchClientOptionsStatic {
     host?: string;
     apiVersion?: string;
     sniffOnStart?: boolean;
+  };
+}
+
+export interface GreminServerClientOptionsStatic {
+  gremlin: {
+    host?: string;
+    port?: string | number;
+    options?: {
+      user: string;
+      password: string;
+    };
   };
 }
