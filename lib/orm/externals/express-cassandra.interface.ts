@@ -1,5 +1,5 @@
 export interface BaseModel<T = any> {
-  new (value?: Partial<T>): BaseModelStatic<T> & T;
+  new <R>(value?: Partial<T | R>): BaseModelStatic<T> & T;
 
   findOneAsync(
     query: FindQuery<T>,
@@ -35,16 +35,31 @@ export interface BaseModel<T = any> {
     done: (err: Error, result: any) => void,
   ): void;
 
+  execute_query(
+    query: string,
+    params: any[],
+    callback?: (err: Error, response?: any) => void,
+  ): void;
+
+  execute_batch(
+    queries: { query: string; params: any[] }[],
+    callback?: (err: Error) => void,
+  ): void;
+
+  close(callback?: (err: Error) => void): void;
+
+  get_keyspace_name(): string;
+
+  get_table_name(): string;
+
+  get_cql_client(): any;
+
   search(
     options: EsSearchOptionsStatic,
     callback?: (err: Error, response?: any) => void,
   ): void;
 
   get_es_client(): any;
-
-  get_keyspace_name(): string;
-
-  get_table_name(): string;
 
   createVertex<R>(
     entity: Partial<T | R>,
@@ -130,6 +145,8 @@ export interface FindQueryOptionsStatic<T = any> {
   pageState?: string;
 
   raw?: boolean;
+
+  prepare?: boolean;
 
   [index: string]: any;
 }
