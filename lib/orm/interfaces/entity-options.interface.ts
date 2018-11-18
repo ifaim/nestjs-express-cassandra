@@ -55,7 +55,12 @@ interface GraphMappingOptionsStatic<Entity = any> {
     follow?: 'MULTI' | 'SIMPLE' | 'MANY2ONE' | 'ONE2MANY' | 'ONE2ONE';
     mother?: 'MULTI' | 'SIMPLE' | 'MANY2ONE' | 'ONE2MANY' | 'ONE2ONE';
   };
-  properties: GraphMappingProperties<Entity>;
+  properties: {
+    [index: string]: {
+      type?: JanusGraphDataTypes;
+      cardinality?: 'SINGLE' | 'LIST' | 'SET';
+    };
+  };
   indexes: {
     [index: string]: {
       type?: 'Composite' | 'Mixed' | 'VertexCentric';
@@ -67,13 +72,6 @@ interface GraphMappingOptionsStatic<Entity = any> {
     };
   };
 }
-
-type GraphMappingProperties<T = {}> = {
-  [P in keyof T]?: {
-    type?: JanusGraphDataTypes;
-    cardinality?: 'SINGLE' | 'LIST' | 'SET';
-  }
-};
 
 type JanusGraphDataTypes =
   | 'Integer'
