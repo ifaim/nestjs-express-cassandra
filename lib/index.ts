@@ -1,12 +1,12 @@
 import { types } from 'cassandra-driver';
-import { doBatchAsync as cassandraBatchAsync } from 'express-cassandra';
+
+export { doBatchAsync, doBatch } from 'express-cassandra';
+export * from 'cassandra-driver';
 
 export * from './interfaces';
 export * from './express-cassandra.module';
 export * from './utils/express-cassandra.decorator';
 export * from './orm';
-
-export * from 'cassandra-driver';
 
 export function uuid(id?): types.Uuid {
   if (!id) {
@@ -42,6 +42,9 @@ export function isTimeUuid(id): boolean {
   return id && id instanceof types.TimeUuid ? true : false;
 }
 
-export function doBatch(queries: string[]): Promise<any> {
-  return cassandraBatchAsync(queries);
-}
+export declare function doBatchAsync(queries: string[]): Promise<any>;
+
+export declare function doBatch(
+  queries: string[],
+  callback: (err: Error) => void,
+): void;
