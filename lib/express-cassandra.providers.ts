@@ -1,7 +1,6 @@
 import {
   getModelToken,
   getConnectionToken,
-  handleRetry,
   getRepositoryToken,
 } from './utils/cassandra-orm.utils';
 import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constant';
@@ -16,9 +15,7 @@ export function createExpressCassandraProviders(
   const providerModel = entity => ({
     provide: getModelToken(entity),
     useFactory: async (client: any, options) => {
-      return await defer(() => loadModel(client, entity))
-        .pipe(handleRetry(options.retryAttempts, options.retryDelay))
-        .toPromise();
+      return await defer(() => loadModel(client, entity)).toPromise();
     },
     inject: [getConnectionToken(connection), EXPRESS_CASSANDRA_MODULE_OPTIONS],
   });

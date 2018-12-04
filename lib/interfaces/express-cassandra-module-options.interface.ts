@@ -6,6 +6,7 @@ export type ExpressCassandraModuleOptions = {
   name?: string;
   retryAttempts?: number;
   retryDelay?: number;
+  keepConnectionAlive?: boolean;
 } & Partial<ClientOptionsStatic>;
 
 export interface ExpressCassandraOptionsFactory {

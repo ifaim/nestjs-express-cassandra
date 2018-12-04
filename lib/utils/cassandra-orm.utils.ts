@@ -14,7 +14,7 @@ export function handleRetry(
             Logger.error(
               `Unable to connect to the database. Retrying (${errorCount +
                 1})...`,
-              error.message,
+              error.stack,
               'ExpressCassandraModule',
             );
             if (errorCount + 1 >= retryAttempts) {
@@ -39,8 +39,8 @@ export function getConnectionToken(
   return 'string' === typeof connection
     ? `${connection}Connection`
     : connection.name
-      ? `${connection.name}Connection`
-      : 'defaultConnection';
+    ? `${connection.name}Connection`
+    : 'defaultConnection';
 }
 
 /**

@@ -1,4 +1,13 @@
-import { DynamicModule, Module, Global, Provider } from '@nestjs/common';
+import {
+  DynamicModule,
+  Module,
+  Global,
+  Provider,
+  OnModuleDestroy,
+  Inject,
+  Logger,
+} from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
@@ -7,10 +16,18 @@ import {
 import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constant';
 import { getConnectionToken, handleRetry } from './utils/cassandra-orm.utils';
 import { createClient } from 'express-cassandra';
+import { defer } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Global()
 @Module({})
-export class ExpressCassandraCoreModule {
+export class ExpressCassandraCoreModule implements OnModuleDestroy {
+  constructor(
+    @Inject(EXPRESS_CASSANDRA_MODULE_OPTIONS)
+    private readonly options: ExpressCassandraModuleOptions,
+    private readonly moduleRef: ModuleRef,
+  ) {}
+
   static forRoot(options: ExpressCassandraModuleOptions = {}): DynamicModule {
     const expressModuleOptions = {
       provide: EXPRESS_CASSANDRA_MODULE_OPTIONS,
@@ -43,6 +60,15 @@ export class ExpressCassandraCoreModule {
       providers: [...asyncProviders, connectionProvider],
       exports: [connectionProvider, ...asyncProviders],
     };
+  }
+
+  async onModuleDestroy() {
+    if (this.options.keepConnectionAlive) {
+      return;
+    }
+    Logger.log('Closing connection', 'ExpressCassandraModule');
+    const connection = this.moduleRef.get(getConnectionToken(this.options));
+    connection && (await connection.closeAsync());
   }
 
   private static createAsyncProviders(
@@ -81,7 +107,13 @@ export class ExpressCassandraCoreModule {
   private static async createConnectionFactory(
     options: ExpressCassandraModuleOptions,
   ): Promise<any> {
-    const { name, retryAttempts, retryDelay, ...cassandraOptions } = options;
-    return await createClient(cassandraOptions);
+    const { retryAttempts, retryDelay, ...cassandraOptions } = options;
+    const client = await createClient(cassandraOptions);
+    return await defer(() => client.initAsync())
+      .pipe(
+        handleRetry(retryAttempts, retryDelay),
+        map(() => client),
+      )
+      .toPromise();
   }
 }
