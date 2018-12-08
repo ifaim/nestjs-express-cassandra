@@ -28,10 +28,7 @@ export class Repository<Entity = any> {
   create(entityLike: Partial<Entity>): Entity;
 
   create(entityLike?): Entity {
-    if (this.target instanceof Function) {
-      return new this.target(entityLike) as Entity;
-    }
-    return entityLike as Entity;
+    return this.mapEntity(entityLike) as Entity;
   }
 
   findOne<T extends Partial<Entity>>(
@@ -45,7 +42,7 @@ export class Repository<Entity = any> {
         ...options,
         ...this.repositoryOptions,
       }),
-    );
+    ).pipe(map(x => this.mapEntity(x)));
   }
 
   find(
@@ -56,7 +53,7 @@ export class Repository<Entity = any> {
   find(query: any = {}, options = {}) {
     return defer(() =>
       this.entity.findAsync(query, { ...options, ...this.repositoryOptions }),
-    );
+    ).pipe(map(x => this.mapEntity(x)));
   }
 
   save(entity: any, options?: SaveOptionsStatic): Observable<Entity>;
@@ -64,7 +61,7 @@ export class Repository<Entity = any> {
   save(entity: any, options?) {
     const model = new this.entity(entity);
     return defer(() => model.saveAsync(options)).pipe(
-      map(() => model.toJSON()),
+      map(() => this.mapEntity(model.toJSON())),
     );
   }
 
@@ -104,7 +101,7 @@ export class Repository<Entity = any> {
         if (row === null) {
           break;
         }
-        reader$.next(row);
+        reader$.next(this.mapEntity(row));
       }
     };
 
@@ -129,7 +126,7 @@ export class Repository<Entity = any> {
     const getReader = () => reader$.asObservable();
     const getDone = () => done$.asObservable();
 
-    const onRow = (n, row): void => reader$.next(row);
+    const onRow = (n, row): void => reader$.next(this.mapEntity(row));
     const onDone = (err: Error, result: any): void => {
       if (err) {
         reader$.error(err);
@@ -142,6 +139,14 @@ export class Repository<Entity = any> {
     };
     this.entity.eachRow(query, options, onRow, onDone);
     return { getReader, getDone };
+  }
+
+  private mapEntity(entityLike) {
+    if (!(this.target instanceof Function)) return entityLike;
+    if (entityLike instanceof Array) {
+      return entityLike.map(x => Object.assign(new this.target(), x));
+    }
+    return Object.assign(new this.target(), entityLike);
   }
 }
 

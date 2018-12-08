@@ -47,7 +47,8 @@
   "dependencies": {
     "@types/cassandra-driver": "^3.4.0",
     "cassandra-driver": "^3.6.0",
-    "express-cassandra": "^2.2.4"
+    "express-cassandra": "^2.2.4",
+    "merge-deep": "^3.0.2"
   },
   "keywords": [
     "nestjs",
