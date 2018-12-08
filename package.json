@@ -12,7 +12,9 @@
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "precommit": "lint-staged",
     "prepublish:npm": "npm run build",
-    "publish:npm": "npm publish --access public"
+    "publish:npm": "npm publish --access public",
+    "prepublish:next": "npm run build",
+    "publish:next": "npm publish --access public --tag next"
   },
   "repository": {
     "type": "git",
@@ -20,23 +22,21 @@
   },
   "homepage": "https://github.com/ifaim/nestjs-express-cassandra",
   "peerDependencies": {
-    "@nestjs/common": "^5.3.2",
-    "@nestjs/core": "^5.3.2",
-    "express-cassandra": "^2.2.3",
+    "@nestjs/common": "^5.4.0",
+    "@nestjs/core": "^5.4.0",
     "reflect-metadata": "0.1.12",
     "rxjs": "^6.0.0"
   },
   "devDependencies": {
-    "@nestjs/common": "^5.3.2",
-    "@nestjs/core": "^5.3.2",
-    "@types/node": "^10.10.2",
-    "express-cassandra": "^2.2.3",
+    "@nestjs/common": "^5.4.1",
+    "@nestjs/core": "^5.4.1",
+    "@types/node": "^10.12.12",
     "husky": "^0.14.3",
     "lint-staged": "^7.3.0",
-    "prettier": "^1.14.3",
+    "prettier": "^1.15.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.2",
-    "typescript": "^3.0.3"
+    "typescript": "^3.2.2"
   },
   "lint-staged": {
     "*.ts": [
@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "@types/cassandra-driver": "^3.4.0",
-    "cassandra-driver": "^3.5.0"
+    "cassandra-driver": "^3.6.0",
+    "express-cassandra": "^2.2.4"
   },
   "keywords": [
     "nestjs",

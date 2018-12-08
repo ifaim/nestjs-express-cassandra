@@ -6,7 +6,7 @@ import {
   UpdateOptionsStatic,
   DeleteOptionsStatic,
 } from '../externals/express-cassandra.interface';
-import { Observable, from, defer, Subject } from 'rxjs';
+import { Observable, defer, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { types } from 'cassandra-driver';
 
@@ -17,15 +17,35 @@ import { types } from 'cassandra-driver';
  * @template Entity
  */
 export class Repository<Entity = any> {
+  private readonly repositoryOptions = { raw: true };
+
   readonly entity: BaseModel<Entity>;
+
+  readonly target;
+
+  create(): Entity;
+
+  create(entityLike: Partial<Entity>): Entity;
+
+  create(entityLike?): Entity {
+    if (this.target instanceof Function) {
+      return new this.target(entityLike) as Entity;
+    }
+    return entityLike as Entity;
+  }
 
   findOne<T extends Partial<Entity>>(
     query: FindQuery<Entity>,
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<T | undefined>;
 
-  findOne(query = {}, options?) {
-    return from(this.entity.findOneAsync(query, options));
+  findOne(query = {}, options = {}) {
+    return defer(() =>
+      this.entity.findOneAsync(query, {
+        ...options,
+        ...this.repositoryOptions,
+      }),
+    );
   }
 
   find(
@@ -33,18 +53,19 @@ export class Repository<Entity = any> {
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<Entity[]>;
 
-  find(query: any = {}, options?: any) {
-    return from(this.entity.findAsync(query, options));
+  find(query: any = {}, options = {}) {
+    return defer(() =>
+      this.entity.findAsync(query, { ...options, ...this.repositoryOptions }),
+    );
   }
 
-  save(
-    entity: Partial<Entity>,
-    options?: SaveOptionsStatic,
-  ): Observable<Entity>;
+  save(entity: any, options?: SaveOptionsStatic): Observable<Entity>;
 
-  save(entity: Entity, options?) {
+  save(entity: any, options?) {
     const model = new this.entity(entity);
-    return defer(() => model.saveAsync(options)).pipe(map(() => model));
+    return defer(() => model.saveAsync(options)).pipe(
+      map(() => model.toJSON()),
+    );
   }
 
   update(
@@ -54,7 +75,7 @@ export class Repository<Entity = any> {
   ): Observable<any>;
 
   update(query = {}, updateValue, options?: any) {
-    return from(this.entity.updateAsync(query, updateValue, options));
+    return defer(() => this.entity.updateAsync(query, updateValue, options));
   }
 
   delete(
@@ -63,17 +84,18 @@ export class Repository<Entity = any> {
   ): Observable<any>;
 
   delete(query = {}, options?) {
-    return from(this.entity.deleteAsync(query, options));
+    return defer(() => this.entity.deleteAsync(query, options));
   }
 
   truncate(): Observable<any> {
-    return from(this.entity.truncateAsync());
+    return defer(() => this.entity.truncateAsync());
   }
 
   stream(
     query: FindQuery<Entity>,
-    options?: FindQueryOptionsStatic<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
   ): Observable<types.ResultSet> {
+    options = { ...options, ...this.repositoryOptions };
     const reader$ = new Subject<any>();
 
     const onRead = (reader): void => {
@@ -99,8 +121,9 @@ export class Repository<Entity = any> {
 
   eachRow(
     query: FindQuery<Entity>,
-    options?: FindQueryOptionsStatic<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
   ): EachRowArgument {
+    options = { ...options, ...this.repositoryOptions };
     const reader$ = new Subject<any>();
     const done$ = new Subject<any>();
     const getReader = () => reader$.asObservable();

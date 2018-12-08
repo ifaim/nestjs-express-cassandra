@@ -24,7 +24,8 @@ export function createExpressCassandraProviders(
     const entitySchema = getEntity(EntityRepository);
     return {
       provide: getRepositoryToken(EntityRepository),
-      useFactory: async model => createRepository(EntityRepository, model),
+      useFactory: async model =>
+        createRepository(EntityRepository, model, entitySchema),
       inject: [getModelToken(entitySchema)],
     };
   };
@@ -38,6 +39,10 @@ export function createExpressCassandraProviders(
   return [...models];
 }
 
-const createRepository = (EntityRepository, model: any): Repository => {
-  return Object.assign(new EntityRepository(), { entity: model });
+const createRepository = (
+  EntityRepository,
+  model: any,
+  target: any,
+): Repository => {
+  return Object.assign(new EntityRepository(), { entity: model, target });
 };
