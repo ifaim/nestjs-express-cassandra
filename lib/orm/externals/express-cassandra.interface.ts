@@ -5,7 +5,7 @@ export interface BaseModel<T = any> {
 
   findOne(
     query: FindQuery<T>,
-    options: { return_query: boolean } & FindQueryOptionsStatic<T>,
+    options: { return_query: true } & FindQueryOptionsStatic<T>,
   ): string;
 
   findOne(query: FindQuery<T>, callback: Callback): void;
@@ -18,8 +18,13 @@ export interface BaseModel<T = any> {
 
   findOneAsync(
     query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T> & { raw: true },
+  ): Promise<T>;
+
+  findOneAsync(
+    query: FindQuery<T>,
     options?: FindQueryOptionsStatic<T>,
-  ): Promise<BaseModelStatic<T> & T>;
+  ): Promise<BaseModelStatic<T>>;
 
   find(
     query: FindQuery<T>,
@@ -36,8 +41,13 @@ export interface BaseModel<T = any> {
 
   findAsync(
     query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T> & { raw: true },
+  ): Promise<T[]>;
+
+  findAsync(
+    query: FindQuery<T>,
     options?: FindQueryOptionsStatic<T>,
-  ): Promise<BaseModelStatic<T>[] & T[]>;
+  ): Promise<BaseModelStatic<T>[]>;
 
   update(
     query: FindQuery<T>,

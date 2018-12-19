@@ -26,16 +26,20 @@ export class Repository<Entity = any> {
 
   readonly returnQueryBuilder: ReturnQueryBuilder<Entity>;
 
-  create(): Entity;
+  create(entity?: Partial<Entity>): Entity;
+  create(entityLikeArray: Partial<Entity>[]): Entity[];
 
-  create(entityLike?: Partial<Entity>): Entity {
+  create(entityLike?: any): Entity | Entity[] {
+    if (Array.isArray(entityLike)) {
+      return entityLike.map(entity => transformEntity(this.target, entity));
+    }
     return transformEntity(this.target, entityLike);
   }
 
-  findOne<T extends Partial<Entity>>(
+  findOne(
     query: FindQuery<Entity>,
     options?: FindQueryOptionsStatic<Entity>,
-  ): Observable<T>;
+  ): Observable<Entity>;
 
   findOne(query: any = {}, options: any = {}): Observable<Entity> {
     return defer(() =>
@@ -51,7 +55,7 @@ export class Repository<Entity = any> {
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<Entity[]>;
 
-  find(query: any = {}, options = {}) {
+  find(query: any = {}, options: any = {}) {
     return defer(() =>
       this.model.findAsync(query, {
         ...options,
@@ -60,7 +64,25 @@ export class Repository<Entity = any> {
     ).pipe(map(x => transformEntity(this.target, x)));
   }
 
-  save(entity: any, options?: SaveOptionsStatic): Observable<Entity>;
+  findAndCount(
+    query: FindQuery<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<[Entity[], number]> {
+    return defer(() =>
+      this.model.findAsync(query, {
+        ...(options as any),
+        ...defaultOptions.findOptions,
+      }),
+    ).pipe(
+      map(x => transformEntity(this.target, x)),
+      map(entities => [entities, entities.length] as [Entity[], number]),
+    );
+  }
+
+  save<T extends Partial<Entity>>(
+    entity: T,
+    options?: SaveOptionsStatic,
+  ): Observable<Entity>;
 
   save(entity: any, options = {}) {
     const model = new this.model(entity);
@@ -179,5 +201,5 @@ export class Repository<Entity = any> {
 export interface EachRowArgument {
   getReader<T = any>(): Observable<T>;
 
-  getDone<T = any>(): Observable<types.ResultSet>;
+  getDone(): Observable<types.ResultSet>;
 }
