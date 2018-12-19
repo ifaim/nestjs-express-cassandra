@@ -185,7 +185,7 @@ import { Observable } from 'rxjs';
 export class PersonService {
   constructor(
     @InjectRepository(PhotoEntity)
-    private readonly photoRepository: Repository<CatEntity>,
+    private readonly photoRepository: Repository<PhotoEntity>,
   ) {}
 
   getById(id: id): Observable<PhotoEntity> {
