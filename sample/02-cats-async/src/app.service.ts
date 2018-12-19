@@ -19,6 +19,6 @@ export class AppService {
     if (typeof id === 'string') {
       id = uuid(id);
     }
-    return await this.catModel.findOneAsync({ id });
+    return await this.catModel.findOneAsync({ id }, { raw: true });
   }
 }

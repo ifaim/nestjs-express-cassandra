@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import {
   ExpressCassandraModule,
   ExpressCassandraModuleOptions,
+  auth,
 } from '@iaminfinity/express-cassandra';
 import { CatsModule } from './cats';
 
@@ -15,6 +16,7 @@ const cassandraOptions: ExpressCassandraModuleOptions = {
     queryOptions: {
       consistency: 1,
     },
+    authProvider: new auth.PlainTextAuthProvider('cassandra', 'cassandra'),
   },
   ormOptions: {
     createKeyspace: true,
@@ -24,7 +26,7 @@ const cassandraOptions: ExpressCassandraModuleOptions = {
     },
     migration: 'alter',
   },
-  retryAttempts: 1,
+  retryAttempts: 3,
   retryDelay: 1000,
 };
 

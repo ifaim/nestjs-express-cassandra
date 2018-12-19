@@ -1,27 +1,75 @@
-import { Injectable } from '@nestjs/common';
-import { BaseModel, InjectModel, uuid } from '@iaminfinity/express-cassandra';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  uuid,
+  InjectRepository,
+  Repository,
+} from '@iaminfinity/express-cassandra';
 import { CatEntity } from './entities/cat.entity';
 import { CreateCatDto } from './dto/create-cat.dto';
+import { tap } from 'rxjs/operators';
+import { DogEntity } from './entities/dog.entity';
+import { CatRepository } from './cat.repository';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CatsService {
+  private readonly logger = new Logger(CatsService.name);
+
   constructor(
-    @InjectModel(CatEntity) private readonly catModel: BaseModel<CatEntity>,
+    @InjectRepository(CatRepository)
+    private readonly catRepository: CatRepository,
+    @InjectRepository(DogEntity)
+    private readonly dogRepository: Repository<DogEntity>,
   ) {}
 
-  async create(createCatDto: CreateCatDto): Promise<CatEntity> {
-    const cat = new this.catModel(createCatDto);
-    return await cat.saveAsync();
+  create(createCatDto: CreateCatDto): Observable<CatEntity> {
+    const cat = this.catRepository.create({ id: uuid(), ...createCatDto });
+    cat.age = 12;
+    cat.breed = 'some';
+    return this.catRepository.save(cat).pipe(
+      tap(x => {
+        this.logger.log(x);
+        this.logger.log(
+          `Instance of ${CatEntity.name}: ${x instanceof CatEntity}`,
+        );
+      }),
+    );
   }
 
-  async findAll(): Promise<CatEntity[]> {
-    return await this.catModel.findAsync({}, { raw: true });
+  findAll() {
+    return this.catRepository.findAndCount({});
   }
 
-  async findById(id): Promise<CatEntity> {
+  findById(id): Observable<CatEntity> {
     if (typeof id === 'string') {
       id = uuid(id);
     }
-    return await this.catModel.findOneAsync({ id });
+    return this.catRepository.findOne({ id }).pipe(
+      tap(x => {
+        this.logger.log(x);
+        this.logger.log(
+          `Instance of ${CatEntity.name}: ${x instanceof CatEntity}`,
+        );
+      }),
+    );
+  }
+
+  async batch() {
+    const queries = [];
+    const catBuilder = this.catRepository.getReturnQueryBuilder();
+    const dogBuilder = this.dogRepository.getReturnQueryBuilder();
+
+    queries.push(catBuilder.save({ name: 'batch cat' }));
+    queries.push(dogBuilder.save({ name: 'batch dog' }));
+
+    await this.catRepository.doBatch(queries);
+
+    this.logger.log(`Running batch`, CatsService.name);
+    this.logger.log(
+      `Batch queries ${JSON.stringify(queries)}`,
+      CatsService.name,
+    );
+
+    return;
   }
 }
