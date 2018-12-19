@@ -31,7 +31,7 @@ Express Cassandra utilities module for [NestJS](https://github.com/nestjs/nest) 
 ## Installation
 
 ```bash
-$ npm i --save @iaminfinity/express-cassandra express-cassandra
+$ npm i --save @iaminfinity/express-cassandra
 ```
 ## Usage
 
@@ -160,6 +160,42 @@ export class PersonService {
 
 ## Using Repository
 
+```typescript
+import { Module } from '@nestjs/common';
+import { ExpressCassandraModule } from '@iaminfinity/express-cassandra';
+import { PhotoService } from './photo.service';
+import { PhotoController } from './photo.controller';
+import { PhotoEntity } from './photo.entity';
+
+@Module({
+  imports: [ExpressCassandraModule.forFeature([PhotoEntity])],
+  providers: [PhotoService],
+  controllers: [PhotoController],
+})
+export class PhotoModule {}
+```
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository, Repository } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class PersonService {
+  constructor(
+    @InjectRepository(PhotoEntity)
+    private readonly photoRepository: Repository<CatEntity>,
+  ) {}
+
+  getById(id: id): Observable<PhotoEntity> {
+    return this.photoRepository.findOne({id});
+  }
+}
+```
+
+## Using Custom Repository
+
 Let's create a repository:
 
 ```typescript
@@ -170,7 +206,7 @@ import { Observable } from 'rxjs';
 @EntityRepository(PhotoEntity)
 export class PhotoRepository extends Repository<PhotoEntity> {
   findById(id: any): Observable<PhotoEntity> {
-    return this.findOne({ id: id }, { raw: true });
+    return this.findOne({ id: id });
   }
 }
 ```
@@ -209,7 +245,7 @@ export class PersonService {
     private readonly photoRepository: PhotoRepository,
   ) {}
 
-  getById(id: id): Observable<PhotoEntity> {
+  getById(id: any): Observable<PhotoEntity> {
     return this.photoRepository.findById(id);
   }
 }

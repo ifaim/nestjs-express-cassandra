@@ -28,11 +28,6 @@ export function handleRetry(
     );
 }
 
-/**
- * @export
- * @param {(any | string)} [connection='default']
- * @returns {string}
- */
 export function getConnectionToken(
   connection: any | string = 'default',
 ): string {
@@ -43,22 +38,10 @@ export function getConnectionToken(
     : 'defaultConnection';
 }
 
-/**
- * @deprecated since version 0.1.1
- * @export
- * @param {*} options
- * @returns
- * @todo remove
- */
-export function getConnectionName(options: any) {
-  Logger.warn('Calling deplecated function', getConnectionName.name, false);
-  return options && options.name ? options.name : 'default';
-}
-
 export function getModelToken(entity: any): string {
   return `${entity.name}Model`;
 }
 
-export function getRepositoryToken(entity: any): string {
-  return `${entity.name}`;
+export function getRepositoryToken(entity: Function): string {
+  return `${entity.name}Repository`;
 }

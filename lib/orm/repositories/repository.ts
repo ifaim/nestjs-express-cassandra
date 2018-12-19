@@ -9,40 +9,41 @@ import {
 import { Observable, defer, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { types } from 'cassandra-driver';
+import { Type } from '@nestjs/common';
+import { ReturnQueryBuilder } from './builder/return-query.builder';
+import { transformEntity } from '../utils/transform-entity.utils';
 
-/**
- * Express cassandra repository.
- * @export
- * @class Repository
- * @template Entity
- */
+const defaultOptions = {
+  findOptions: { raw: true },
+  updateOptions: { if_exists: true },
+  deleteOptions: { if_exists: true },
+};
+
 export class Repository<Entity = any> {
-  private readonly repositoryOptions = { raw: true };
+  readonly model: BaseModel<Entity>;
 
-  readonly entity: BaseModel<Entity>;
+  readonly target: Type<Entity>;
 
-  readonly target;
+  readonly returnQueryBuilder: ReturnQueryBuilder<Entity>;
 
   create(): Entity;
 
-  create(entityLike: Partial<Entity>): Entity;
-
-  create(entityLike?): Entity {
-    return this.mapEntity(entityLike) as Entity;
+  create(entityLike?: Partial<Entity>): Entity {
+    return transformEntity(this.target, entityLike);
   }
 
   findOne<T extends Partial<Entity>>(
     query: FindQuery<Entity>,
     options?: FindQueryOptionsStatic<Entity>,
-  ): Observable<T | undefined>;
+  ): Observable<T>;
 
-  findOne(query = {}, options = {}) {
+  findOne(query: any = {}, options: any = {}): Observable<Entity> {
     return defer(() =>
-      this.entity.findOneAsync(query, {
+      this.model.findOneAsync(query, {
         ...options,
-        ...this.repositoryOptions,
+        ...defaultOptions.findOptions,
       }),
-    ).pipe(map(x => this.mapEntity(x)));
+    ).pipe(map(x => transformEntity(this.target, x)));
   }
 
   find(
@@ -52,16 +53,19 @@ export class Repository<Entity = any> {
 
   find(query: any = {}, options = {}) {
     return defer(() =>
-      this.entity.findAsync(query, { ...options, ...this.repositoryOptions }),
-    ).pipe(map(x => this.mapEntity(x)));
+      this.model.findAsync(query, {
+        ...options,
+        ...defaultOptions.findOptions,
+      }),
+    ).pipe(map(x => transformEntity(this.target, x)));
   }
 
   save(entity: any, options?: SaveOptionsStatic): Observable<Entity>;
 
-  save(entity: any, options?) {
-    const model = new this.entity(entity);
+  save(entity: any, options = {}) {
+    const model = new this.model(entity);
     return defer(() => model.saveAsync(options)).pipe(
-      map(() => this.mapEntity(model.toJSON())),
+      map(() => transformEntity(this.target, model.toJSON())),
     );
   }
 
@@ -71,8 +75,13 @@ export class Repository<Entity = any> {
     options?: UpdateOptionsStatic<Entity>,
   ): Observable<any>;
 
-  update(query = {}, updateValue, options?: any) {
-    return defer(() => this.entity.updateAsync(query, updateValue, options));
+  update(query = {}, updateValue, options = {}) {
+    return defer(() =>
+      this.model.updateAsync(query, updateValue, {
+        ...defaultOptions.updateOptions,
+        ...options,
+      }),
+    );
   }
 
   delete(
@@ -80,19 +89,18 @@ export class Repository<Entity = any> {
     options?: DeleteOptionsStatic,
   ): Observable<any>;
 
-  delete(query = {}, options?) {
-    return defer(() => this.entity.deleteAsync(query, options));
+  delete(query = {}, options = {}) {
+    return defer(() => this.model.deleteAsync(query, options));
   }
 
   truncate(): Observable<any> {
-    return defer(() => this.entity.truncateAsync());
+    return defer(() => this.model.truncateAsync());
   }
 
   stream(
     query: FindQuery<Entity>,
     options: FindQueryOptionsStatic<Entity> = {},
-  ): Observable<types.ResultSet> {
-    options = { ...options, ...this.repositoryOptions };
+  ): Observable<Entity> {
     const reader$ = new Subject<any>();
 
     const onRead = (reader): void => {
@@ -101,7 +109,7 @@ export class Repository<Entity = any> {
         if (row === null) {
           break;
         }
-        reader$.next(this.mapEntity(row));
+        reader$.next(transformEntity(this.target, row));
       }
     };
 
@@ -112,7 +120,14 @@ export class Repository<Entity = any> {
       reader$.complete();
       return;
     };
-    this.entity.stream(query, options, onRead, onDone);
+
+    this.model.stream(
+      query,
+      { ...options, ...defaultOptions.findOptions },
+      onRead,
+      onDone,
+    );
+
     return reader$.asObservable();
   }
 
@@ -120,13 +135,13 @@ export class Repository<Entity = any> {
     query: FindQuery<Entity>,
     options: FindQueryOptionsStatic<Entity> = {},
   ): EachRowArgument {
-    options = { ...options, ...this.repositoryOptions };
     const reader$ = new Subject<any>();
     const done$ = new Subject<any>();
     const getReader = () => reader$.asObservable();
     const getDone = () => done$.asObservable();
 
-    const onRow = (n, row): void => reader$.next(this.mapEntity(row));
+    const onRow = (n, row): void =>
+      reader$.next(transformEntity(this.target, row));
     const onDone = (err: Error, result: any): void => {
       if (err) {
         reader$.error(err);
@@ -137,16 +152,27 @@ export class Repository<Entity = any> {
       reader$.complete();
       done$.complete();
     };
-    this.entity.eachRow(query, options, onRow, onDone);
+
+    this.model.eachRow(
+      query,
+      { ...options, ...defaultOptions.findOptions },
+      onRow,
+      onDone,
+    );
+
     return { getReader, getDone };
   }
 
-  private mapEntity(entityLike) {
-    if (!(this.target instanceof Function)) return entityLike;
-    if (entityLike instanceof Array) {
-      return entityLike.map(x => Object.assign(new this.target(), x));
-    }
-    return Object.assign(new this.target(), entityLike);
+  get getModelRef(): BaseModel<Entity> {
+    return this.model;
+  }
+
+  getReturnQueryBuilder(): ReturnQueryBuilder<Entity> {
+    return this.returnQueryBuilder;
+  }
+
+  doBatch(queries): Promise<any> {
+    return this.model.execute_batchAsync(queries);
   }
 }
 
