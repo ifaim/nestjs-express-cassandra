@@ -68,6 +68,7 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
     }
     Logger.log('Closing connection', 'ExpressCassandraModule');
     const connection = this.moduleRef.get(getConnectionToken(this.options));
+    // tslint:disable-next-line:no-unused-expression
     connection && (await connection.closeAsync());
   }
 

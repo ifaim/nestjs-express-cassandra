@@ -23,6 +23,5 @@ export function Entity(
 
     setEntityName(target.prototype, name);
     addOptions(target.prototype, options);
-    // Reflect.defineMetadata(ENTITY_METADATA, options, target);
   };
 }

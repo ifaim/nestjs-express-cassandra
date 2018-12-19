@@ -1,8 +1,10 @@
-import { Entity, Column } from '@iaminfinity/express-cassandra';
+import { Entity, Column, uuid, timeuuid } from '@iaminfinity/express-cassandra';
 
 @Entity({
   table_name: 'cats',
-  key: ['id'],
+  // partition key = ['id']
+  // clustering key = ['time_id']
+  key: [['id'], 'time_id'],
   options: {
     timestamps: {
       createdAt: 'created_at',
@@ -12,13 +14,27 @@ import { Entity, Column } from '@iaminfinity/express-cassandra';
       key: '__v1',
     },
   },
+  before_save: (instance: CatEntity, options) => {
+    if (!instance.id) {
+      instance.id = uuid();
+    }
+    if (!instance.time_id) {
+      instance.id = timeuuid();
+    }
+  },
 })
 export class CatEntity {
   @Column({
     type: 'uuid',
-    default: { $db_function: 'uuid()' },
+    default: () => uuid(),
   })
   id: any;
+
+  @Column({
+    type: 'timeuuid',
+    default: { $db_function: 'now()' },
+  })
+  time_id: any;
 
   @Column({
     type: 'text',

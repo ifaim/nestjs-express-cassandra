@@ -3,10 +3,11 @@ import {
   getConnectionToken,
   getRepositoryToken,
 } from './utils/cassandra-orm.utils';
-import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constant';
 import { defer } from 'rxjs';
 import { loadModel, Repository } from './orm';
 import { getEntity } from './orm/utils/decorator.utils';
+import { Provider } from '@nestjs/common';
+import { RepositoryFactory } from './orm/repositories/repository.factory';
 
 export function createExpressCassandraProviders(
   entities?: Function[],
@@ -14,30 +15,36 @@ export function createExpressCassandraProviders(
 ) {
   const providerModel = entity => ({
     provide: getModelToken(entity),
-    useFactory: async (client: any, options) => {
+    useFactory: async (client: any) => {
       return await defer(() => loadModel(client, entity)).toPromise();
     },
-    inject: [getConnectionToken(connection), EXPRESS_CASSANDRA_MODULE_OPTIONS],
+    inject: [getConnectionToken(connection)],
   });
 
-  const provideRepository = EntityRepository => {
-    const entitySchema = getEntity(EntityRepository);
+  const provideRepository = entity => ({
+    provide: getRepositoryToken(entity),
+    useFactory: async (model: any) => RepositoryFactory.create(entity, model),
+    inject: [getModelToken(entity)],
+  });
+
+  const provideCustomRepository = EntityRepository => {
+    const entity = getEntity(EntityRepository);
     return {
       provide: getRepositoryToken(EntityRepository),
-      useFactory: async model => createRepository(EntityRepository, model),
-      inject: [getModelToken(entitySchema)],
+      useFactory: async model =>
+        RepositoryFactory.create(entity, model, EntityRepository),
+      inject: [getModelToken(entity)],
     };
   };
 
-  const models = (entities || []).map(entity => {
+  const providers: Provider[] = [];
+  (entities || []).forEach(entity => {
     if (entity.prototype instanceof Repository) {
-      return provideRepository(entity);
+      providers.push(provideCustomRepository(entity));
+      return;
     }
-    return providerModel(entity);
+    providers.push(providerModel(entity), provideRepository(entity));
   });
-  return [...models];
-}
 
-const createRepository = (EntityRepository, model: any): Repository => {
-  return Object.assign(new EntityRepository(), { entity: model });
-};
+  return [...providers];
+}

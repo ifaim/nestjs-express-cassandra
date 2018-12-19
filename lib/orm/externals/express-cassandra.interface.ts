@@ -1,15 +1,72 @@
+type Callback = (error: Error, value?: any) => void;
+
 export interface BaseModel<T = any> {
   new <R>(value?: Partial<T | R>): BaseModelStatic<T> & T;
+
+  findOne(
+    query: FindQuery<T>,
+    options: { return_query: true } & FindQueryOptionsStatic<T>,
+  ): string;
+
+  findOne(query: FindQuery<T>, callback: Callback): void;
+
+  findOne(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T>,
+    callback: Callback,
+  ): void;
+
+  findOneAsync(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T> & { raw: true },
+  ): Promise<T>;
 
   findOneAsync(
     query: FindQuery<T>,
     options?: FindQueryOptionsStatic<T>,
-  ): Promise<BaseModelStatic<T> & T>;
+  ): Promise<BaseModelStatic<T>>;
+
+  find(
+    query: FindQuery<T>,
+    options?: { return_query: true } & FindQueryOptionsStatic<T>,
+  ): string;
+
+  find(query: FindQuery<T>, callback: Callback): void;
+
+  find(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T>,
+    callback: Callback,
+  ): void;
+
+  findAsync(
+    query: FindQuery<T>,
+    options: FindQueryOptionsStatic<T> & { raw: true },
+  ): Promise<T[]>;
 
   findAsync(
     query: FindQuery<T>,
     options?: FindQueryOptionsStatic<T>,
-  ): Promise<BaseModelStatic<T>[] & T[]>;
+  ): Promise<BaseModelStatic<T>[]>;
+
+  update(
+    query: FindQuery<T>,
+    updateValue: Partial<T>,
+    options: { return_query: true } & UpdateOptionsStatic<T>,
+  ): string;
+
+  update(
+    query: FindQuery<T>,
+    updateValue: Partial<T>,
+    callback?: Callback,
+  ): void;
+
+  update(
+    query: FindQuery<T>,
+    updateValue: Partial<T>,
+    options: UpdateOptionsStatic<T>,
+    callback?: Callback,
+  ): void;
 
   updateAsync(
     query: FindQuery<T>,
@@ -17,7 +74,23 @@ export interface BaseModel<T = any> {
     options?: UpdateOptionsStatic<T>,
   ): Promise<T | any>;
 
-  deleteAsync(query: FindQuery<T>, options?): Promise<T | any>;
+  delete(
+    query: FindQuery<T>,
+    options: { return_query: true } & DeleteOptionsStatic,
+  ): string;
+
+  delete(query: FindQuery<T>, callback?: Callback): void;
+
+  delete(
+    query: FindQuery<T>,
+    options?: DeleteOptionsStatic,
+    callback?: Callback,
+  ): void;
+
+  deleteAsync(
+    query: FindQuery<T>,
+    options?: DeleteOptionsStatic,
+  ): Promise<T | any>;
 
   truncateAsync(): Promise<any>;
 
@@ -35,11 +108,7 @@ export interface BaseModel<T = any> {
     done: (err: Error, result: any) => void,
   ): void;
 
-  execute_query(
-    query: string,
-    params: any[],
-    callback?: (err: Error, response?: any) => void,
-  ): void;
+  execute_query(query: string, params: any[], callback?: Callback): void;
 
   execute_batch(
     queries: { query: string; params: any[] }[],
@@ -54,24 +123,18 @@ export interface BaseModel<T = any> {
 
   get_cql_client(): any;
 
-  search(
-    options: EsSearchOptionsStatic,
-    callback?: (err: Error, response?: any) => void,
-  ): void;
+  search(options: EsSearchOptionsStatic, callback?: Callback): void;
 
   get_es_client(): any;
 
-  createVertex<R>(
-    entity: Partial<T | R>,
-    callback?: (err: Error, response?: any) => void,
-  ): void;
+  createVertex<R>(entity: Partial<T | R>, callback?: Callback): void;
 
-  getVertex(id: any, callback?: (err: Error, response?: any) => void): void;
+  getVertex(id: any, callback?: Callback): void;
 
   updateVertex<R>(
     id: any,
     updateEntity: Partial<T | R>,
-    callback?: (err: Error, response?: any) => void,
+    callback?: Callback,
   ): void;
 
   deleteVertex(id: any, callback?: (err: Error) => void): void;
@@ -80,7 +143,7 @@ export interface BaseModel<T = any> {
     relation: string,
     followerVertexId: any,
     followeeVertexId: any,
-    callback?: (err: Error, response?: any) => void,
+    callback?: Callback,
   ): void;
 
   createEdge(
@@ -88,23 +151,19 @@ export interface BaseModel<T = any> {
     followerVertexId: any,
     followeeVertexId: any,
     model: any,
-    callback?: (err: Error, response?: any) => void,
+    callback?: Callback,
   ): void;
 
-  getEdge(id: any, callback?: (err: Error, response?: any) => void): void;
+  getEdge(id: any, callback?: Callback): void;
 
-  updateEdge(
-    id: any,
-    updateModel: any,
-    callback?: (err: Error, response?: any) => void,
-  ): void;
+  updateEdge(id: any, updateModel: any, callback?: Callback): void;
 
   deleteEdge(id: any, callback?: (err: Error) => void): void;
 
   graphQuery<R>(
     query: string,
     entityQuery: Partial<T | R>,
-    callback?: (err: Error, response?: any) => void,
+    callback?: Callback,
   ): void;
 
   get_gremlin_client(): GremlinClientStatic<T>;
@@ -113,14 +172,21 @@ export interface BaseModel<T = any> {
 }
 
 export interface BaseModelStatic<T> {
-  saveAsync(options?: SaveOptionsStatic): Promise<T>;
+  save(options: { return_query: boolean } & SaveOptionsStatic): string;
 
-  updateAsync(
-    updateValue: Partial<T>,
-    options?: UpdateOptionsStatic<T>,
-  ): Promise<T>;
+  save(callback?: Callback): void;
 
-  deleteAsync(options?): Promise<T>;
+  save(options: SaveOptionsStatic, callback?: Callback): void;
+
+  saveAsync(options?: SaveOptionsStatic): Promise<any>;
+
+  delete(options: { return_query: boolean } & DeleteOptionsStatic): string;
+
+  delete(callback?: Callback): void;
+
+  delete(options: DeleteOptionsStatic, callback?: Callback): void;
+
+  deleteAsync(options?: DeleteOptionsStatic): Promise<any>;
 
   isModify(key?: keyof T): boolean;
 
@@ -231,7 +297,7 @@ interface GremlinClientStatic<TEntity = any> {
   execute<T>(
     query: string,
     entityQuery: Partial<TEntity | T>,
-    callback?: (err: Error, response?: any) => void,
+    callback?: Callback,
   ): void;
 
   [index: string]: any;

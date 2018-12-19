@@ -6,26 +6,48 @@ import {
   UpdateOptionsStatic,
   DeleteOptionsStatic,
 } from '../externals/express-cassandra.interface';
-import { Observable, from, defer, Subject } from 'rxjs';
+import { Observable, defer, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { types } from 'cassandra-driver';
+import { Type } from '@nestjs/common';
+import { ReturnQueryBuilder } from './builder/return-query.builder';
+import { transformEntity } from '../utils/transform-entity.utils';
 
-/**
- * Express cassandra repository.
- * @export
- * @class Repository
- * @template Entity
- */
+const defaultOptions = {
+  findOptions: { raw: true },
+  updateOptions: { if_exists: true },
+  deleteOptions: { if_exists: true },
+};
+
 export class Repository<Entity = any> {
-  readonly entity: BaseModel<Entity>;
+  readonly model: BaseModel<Entity>;
 
-  findOne<T extends Partial<Entity>>(
+  readonly target: Type<Entity>;
+
+  readonly returnQueryBuilder: ReturnQueryBuilder<Entity>;
+
+  create(entity?: Partial<Entity>): Entity;
+  create(entityLikeArray: Partial<Entity>[]): Entity[];
+
+  create(entityLike?: any): Entity | Entity[] {
+    if (Array.isArray(entityLike)) {
+      return entityLike.map(entity => transformEntity(this.target, entity));
+    }
+    return transformEntity(this.target, entityLike);
+  }
+
+  findOne(
     query: FindQuery<Entity>,
     options?: FindQueryOptionsStatic<Entity>,
-  ): Observable<T | undefined>;
+  ): Observable<Entity>;
 
-  findOne(query = {}, options?) {
-    return from(this.entity.findOneAsync(query, options));
+  findOne(query: any = {}, options: any = {}): Observable<Entity> {
+    return defer(() =>
+      this.model.findOneAsync(query, {
+        ...options,
+        ...defaultOptions.findOptions,
+      }),
+    ).pipe(map(x => transformEntity(this.target, x)));
   }
 
   find(
@@ -33,18 +55,40 @@ export class Repository<Entity = any> {
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<Entity[]>;
 
-  find(query: any = {}, options?: any) {
-    return from(this.entity.findAsync(query, options));
+  find(query: any = {}, options: any = {}) {
+    return defer(() =>
+      this.model.findAsync(query, {
+        ...options,
+        ...defaultOptions.findOptions,
+      }),
+    ).pipe(map(x => transformEntity(this.target, x)));
   }
 
-  save(
-    entity: Partial<Entity>,
+  findAndCount(
+    query: FindQuery<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<[Entity[], number]> {
+    return defer(() =>
+      this.model.findAsync(query, {
+        ...(options as any),
+        ...defaultOptions.findOptions,
+      }),
+    ).pipe(
+      map(x => transformEntity(this.target, x)),
+      map(entities => [entities, entities.length] as [Entity[], number]),
+    );
+  }
+
+  save<T extends Partial<Entity>>(
+    entity: T,
     options?: SaveOptionsStatic,
   ): Observable<Entity>;
 
-  save(entity: Entity, options?) {
-    const model = new this.entity(entity);
-    return defer(() => model.saveAsync(options)).pipe(map(() => model));
+  save(entity: any, options = {}) {
+    const model = new this.model(entity);
+    return defer(() => model.saveAsync(options)).pipe(
+      map(() => transformEntity(this.target, model.toJSON())),
+    );
   }
 
   update(
@@ -53,8 +97,13 @@ export class Repository<Entity = any> {
     options?: UpdateOptionsStatic<Entity>,
   ): Observable<any>;
 
-  update(query = {}, updateValue, options?: any) {
-    return from(this.entity.updateAsync(query, updateValue, options));
+  update(query = {}, updateValue, options = {}) {
+    return defer(() =>
+      this.model.updateAsync(query, updateValue, {
+        ...defaultOptions.updateOptions,
+        ...options,
+      }),
+    );
   }
 
   delete(
@@ -62,18 +111,18 @@ export class Repository<Entity = any> {
     options?: DeleteOptionsStatic,
   ): Observable<any>;
 
-  delete(query = {}, options?) {
-    return from(this.entity.deleteAsync(query, options));
+  delete(query = {}, options = {}) {
+    return defer(() => this.model.deleteAsync(query, options));
   }
 
   truncate(): Observable<any> {
-    return from(this.entity.truncateAsync());
+    return defer(() => this.model.truncateAsync());
   }
 
   stream(
     query: FindQuery<Entity>,
-    options?: FindQueryOptionsStatic<Entity>,
-  ): Observable<types.ResultSet> {
+    options: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<Entity> {
     const reader$ = new Subject<any>();
 
     const onRead = (reader): void => {
@@ -82,7 +131,7 @@ export class Repository<Entity = any> {
         if (row === null) {
           break;
         }
-        reader$.next(row);
+        reader$.next(transformEntity(this.target, row));
       }
     };
 
@@ -93,20 +142,28 @@ export class Repository<Entity = any> {
       reader$.complete();
       return;
     };
-    this.entity.stream(query, options, onRead, onDone);
+
+    this.model.stream(
+      query,
+      { ...options, ...defaultOptions.findOptions },
+      onRead,
+      onDone,
+    );
+
     return reader$.asObservable();
   }
 
   eachRow(
     query: FindQuery<Entity>,
-    options?: FindQueryOptionsStatic<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
   ): EachRowArgument {
     const reader$ = new Subject<any>();
     const done$ = new Subject<any>();
     const getReader = () => reader$.asObservable();
     const getDone = () => done$.asObservable();
 
-    const onRow = (n, row): void => reader$.next(row);
+    const onRow = (n, row): void =>
+      reader$.next(transformEntity(this.target, row));
     const onDone = (err: Error, result: any): void => {
       if (err) {
         reader$.error(err);
@@ -117,13 +174,32 @@ export class Repository<Entity = any> {
       reader$.complete();
       done$.complete();
     };
-    this.entity.eachRow(query, options, onRow, onDone);
+
+    this.model.eachRow(
+      query,
+      { ...options, ...defaultOptions.findOptions },
+      onRow,
+      onDone,
+    );
+
     return { getReader, getDone };
+  }
+
+  get getModelRef(): BaseModel<Entity> {
+    return this.model;
+  }
+
+  getReturnQueryBuilder(): ReturnQueryBuilder<Entity> {
+    return this.returnQueryBuilder;
+  }
+
+  doBatch(queries): Promise<any> {
+    return this.model.execute_batchAsync(queries);
   }
 }
 
 export interface EachRowArgument {
   getReader<T = any>(): Observable<T>;
 
-  getDone<T = any>(): Observable<types.ResultSet>;
+  getDone(): Observable<types.ResultSet>;
 }
