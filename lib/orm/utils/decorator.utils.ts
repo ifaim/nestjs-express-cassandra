@@ -67,3 +67,8 @@ export function addOptions(target: any, options: any): void {
   const mOptions = getOptions(target) || {};
   setOptions(target, mergeDeep(mOptions, options));
 }
+
+export const addHookFunction = (target: object, metadataKey: string) => {
+  const funcLikeArray: any[] = Reflect.getMetadata(metadataKey, target) || [];
+  return (...args: any[]) => funcLikeArray.map(funcLike => funcLike(...args));
+};
