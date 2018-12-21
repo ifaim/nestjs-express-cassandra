@@ -12,12 +12,20 @@ import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
   ExpressCassandraOptionsFactory,
+  ConnectionOptions,
 } from './interfaces';
-import { EXPRESS_CASSANDRA_MODULE_OPTIONS } from './express-cassandra.constant';
-import { getConnectionToken, handleRetry } from './utils/cassandra-orm.utils';
-import { createClient } from 'express-cassandra';
+import {
+  EXPRESS_CASSANDRA_MODULE_OPTIONS,
+  EXPRESS_CASSANDRA_MODULE_ID,
+} from './express-cassandra.constant';
+import {
+  getConnectionToken,
+  handleRetry,
+  generateString,
+} from './utils/cassandra-orm.utils';
 import { defer } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as Connection from 'express-cassandra';
 
 @Global()
 @Module({})
@@ -34,13 +42,13 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
       useValue: options,
     };
     const connectionProvider = {
-      provide: getConnectionToken(options),
-      useFactory: async () => this.createConnectionFactory(options),
+      provide: getConnectionToken(options as ConnectionOptions),
+      useFactory: async () => await this.createConnectionFactory(options),
     };
     return {
       module: ExpressCassandraCoreModule,
       providers: [expressModuleOptions, connectionProvider],
-      exports: [connectionProvider, expressModuleOptions],
+      exports: [connectionProvider],
     };
   }
 
@@ -48,17 +56,32 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
     options: ExpressCassandraModuleAsyncOptions,
   ): DynamicModule {
     const connectionProvider = {
-      provide: getConnectionToken(options),
-      useFactory: async (ormOptions: ExpressCassandraModuleOptions) =>
-        this.createConnectionFactory(ormOptions),
+      provide: getConnectionToken(options as ConnectionOptions),
+      useFactory: async (typeormOptions: ExpressCassandraModuleOptions) => {
+        if (options.name) {
+          return await this.createConnectionFactory({
+            ...typeormOptions,
+            name: options.name,
+          });
+        }
+        return await this.createConnectionFactory(typeormOptions);
+      },
       inject: [EXPRESS_CASSANDRA_MODULE_OPTIONS],
     };
+
     const asyncProviders = this.createAsyncProviders(options);
     return {
       module: ExpressCassandraCoreModule,
       imports: options.imports,
-      providers: [...asyncProviders, connectionProvider],
-      exports: [connectionProvider, ...asyncProviders],
+      providers: [
+        ...asyncProviders,
+        connectionProvider,
+        {
+          provide: EXPRESS_CASSANDRA_MODULE_ID,
+          useValue: generateString(),
+        },
+      ],
+      exports: [connectionProvider],
     };
   }
 
@@ -67,7 +90,8 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
       return;
     }
     Logger.log('Closing connection', 'ExpressCassandraModule');
-    const connection = this.moduleRef.get(getConnectionToken(this.options));
+    const connection = this.moduleRef.get<Connection>(getConnectionToken(this
+      .options as ConnectionOptions) as any);
     // tslint:disable-next-line:no-unused-expression
     connection && (await connection.closeAsync());
   }
@@ -107,13 +131,13 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
 
   private static async createConnectionFactory(
     options: ExpressCassandraModuleOptions,
-  ): Promise<any> {
+  ): Promise<Connection> {
     const { retryAttempts, retryDelay, ...cassandraOptions } = options;
-    const client = await createClient(cassandraOptions);
-    return await defer(() => client.initAsync())
+    const connection = new Connection(cassandraOptions);
+    return await defer(() => connection.initAsync())
       .pipe(
         handleRetry(retryAttempts, retryDelay),
-        map(() => client),
+        map(() => connection),
       )
       .toPromise();
   }

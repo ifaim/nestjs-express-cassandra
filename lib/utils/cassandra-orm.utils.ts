@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs';
 import { delay, retryWhen, scan } from 'rxjs/operators';
 import { Logger } from '@nestjs/common';
+import * as Connection from 'express-cassandra';
+import { ConnectionOptions } from '../interfaces';
 
 export function handleRetry(
   retryAttempts: number = 6,
@@ -29,19 +31,29 @@ export function handleRetry(
 }
 
 export function getConnectionToken(
-  connection: any | string = 'default',
-): string {
-  return 'string' === typeof connection
+  connection: Connection | ConnectionOptions | string = 'default',
+): string | Function {
+  return 'default' === connection
+    ? Connection
+    : 'string' === typeof connection
     ? `${connection}Connection`
-    : connection.name
-    ? `${connection.name}Connection`
-    : 'defaultConnection';
+    : 'default' === connection.name || !connection.name
+    ? Connection
+    : `${connection.name}Connection`;
 }
 
-export function getModelToken(entity: any): string {
+export function getModelToken(entity: Function) {
   return `${entity.name}Model`;
 }
 
-export function getRepositoryToken(entity: Function): string {
+export function getRepositoryToken(entity: Function) {
   return `${entity.name}Repository`;
 }
+
+export function getConnectionName(options: ConnectionOptions) {
+  return options && options.name ? options.name : 'default';
+}
+
+// tslint:disable-next-line:no-bitwise
+export const generateString = () =>
+  [...Array(10)].map(i => ((Math.random() * 36) | 0).toString(36)).join;

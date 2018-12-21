@@ -1,5 +1,5 @@
 import { Repository } from './repository';
-import { BaseModel } from '../externals/express-cassandra.interface';
+import { BaseModel } from '../interfaces/externals/express-cassandra.interface';
 import { ReturnQueryBuilder } from './builder/return-query.builder';
 
 export class RepositoryFactory {

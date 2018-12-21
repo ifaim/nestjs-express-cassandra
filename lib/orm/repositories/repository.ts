@@ -5,7 +5,7 @@ import {
   SaveOptionsStatic,
   UpdateOptionsStatic,
   DeleteOptionsStatic,
-} from '../externals/express-cassandra.interface';
+} from '../interfaces/externals/express-cassandra.interface';
 import { Observable, defer, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { types } from 'cassandra-driver';
@@ -30,9 +30,6 @@ export class Repository<Entity = any> {
   create(entityLikeArray: Partial<Entity>[]): Entity[];
 
   create(entityLike?: any): Entity | Entity[] {
-    if (Array.isArray(entityLike)) {
-      return entityLike.map(entity => transformEntity(this.target, entity));
-    }
     return transformEntity(this.target, entityLike);
   }
 
@@ -47,7 +44,7 @@ export class Repository<Entity = any> {
         ...options,
         ...defaultOptions.findOptions,
       }),
-    ).pipe(map(x => transformEntity(this.target, x)));
+    ).pipe(map(x => x && transformEntity(this.target, x)));
   }
 
   find(

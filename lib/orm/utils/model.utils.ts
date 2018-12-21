@@ -1,10 +1,11 @@
 import { getAttributes, getOptions } from './decorator.utils';
 import { Logger } from '@nestjs/common';
 
-export function loadModel(client, entity): Promise<any> {
+export function loadModel(connection: any, entity: any): Promise<any> {
   const schema = getSchema(entity);
   const modelName = entity.name || entity.table_name;
-  const model = client.loadSchema(modelName, schema);
+  const model = connection.loadSchema(modelName, schema);
+
   return new Promise(resolve => {
     model.syncDB(err => {
       if (err) {
@@ -16,7 +17,7 @@ export function loadModel(client, entity): Promise<any> {
   });
 }
 
-export function getSchema(entity) {
+export function getSchema(entity: Function) {
   const attributes = getAttributes(entity.prototype);
   const { instanceMethods, classMethods, ...options } = getOptions(
     entity.prototype,

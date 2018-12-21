@@ -4,7 +4,7 @@ export function transformEntity<T>(target: Type<T>, entityLike: any[]): T[];
 export function transformEntity<T>(target: Type<T>, entityLike: any): T;
 
 export function transformEntity<T>(target: Type<T>, entityLike: any): T | T[] {
-  if (!target || !(target && typeof target === 'function')) {
+  if (!target || !(target && typeof target === 'function') || !entityLike) {
     return entityLike;
   }
   if (entityLike instanceof Array) {

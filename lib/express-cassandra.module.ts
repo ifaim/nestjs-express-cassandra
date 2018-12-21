@@ -3,8 +3,10 @@ import { ExpressCassandraCoreModule } from './express-casandra-core.module';
 import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
+  ConnectionOptions,
 } from './interfaces';
 import { createExpressCassandraProviders } from './express-cassandra.providers';
+import * as Connection from 'express-cassandra';
 
 @Module({})
 export class ExpressCassandraModule {
@@ -16,8 +18,8 @@ export class ExpressCassandraModule {
   }
 
   static forFeature(
-    entities: Function[],
-    connection?: string | Function,
+    entities: Function[] = [],
+    connection: Connection | ConnectionOptions | string = 'default',
   ): DynamicModule {
     const providers = createExpressCassandraProviders(entities, connection);
     return {

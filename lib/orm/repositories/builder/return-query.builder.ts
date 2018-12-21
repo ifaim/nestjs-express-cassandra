@@ -2,10 +2,9 @@ import {
   BaseModel,
   SaveOptionsStatic,
   FindQuery,
-  FindQueryOptionsStatic,
   DeleteOptionsStatic,
   UpdateOptionsStatic,
-} from '../../externals/express-cassandra.interface';
+} from '../../interfaces/externals/express-cassandra.interface';
 
 export class ReturnQueryBuilder<T = any> {
   constructor(private readonly model: BaseModel<T>) {}

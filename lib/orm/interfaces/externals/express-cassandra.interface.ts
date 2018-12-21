@@ -220,7 +220,7 @@ export interface FindQueryOptionsStatic<T = any> {
 export type FindQuery<T> = { [P in keyof T]?: T[P] | FindSubQueryStatic } &
   FindQueryStatic<T>;
 
-interface FindQueryStatic<T> {
+export interface FindQueryStatic<T> {
   $orderby?: {
     $asc?: keyof T | Array<keyof T>;
     $desc?: keyof T | Array<keyof T>;
@@ -229,7 +229,7 @@ interface FindQueryStatic<T> {
   $limit?: number;
 }
 
-interface FindSubQueryStatic {
+export interface FindSubQueryStatic {
   $token?: any;
 
   $in?: string[];
