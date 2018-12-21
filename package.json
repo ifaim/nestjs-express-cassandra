@@ -1,6 +1,6 @@
 {
   "name": "@iaminfinity/express-cassandra",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
   "author": {
     "name": "Fahim Rahman",
