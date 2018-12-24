@@ -23,7 +23,7 @@ export class CatsService {
   ) {}
 
   create(createCatDto: CreateCatDto): Observable<CatEntity> {
-    const cat = this.catRepository.create({ id: uuid(), ...createCatDto });
+    const cat = this.catRepository.create({ ...createCatDto });
     cat.age = 12;
     cat.breed = 'some';
     return this.catRepository.save(cat).pipe(

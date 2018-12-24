@@ -32,8 +32,6 @@ export class ConfigService implements ExpressCassandraOptionsFactory {
         },
         migration: 'alter',
       },
-      retryAttempts: 1,
-      retryDelay: 1000,
     };
   }
 
@@ -57,8 +55,6 @@ export class ConfigService implements ExpressCassandraOptionsFactory {
         },
         migration: 'alter',
       },
-      retryAttempts: 1,
-      retryDelay: 1000,
     };
   }
 }

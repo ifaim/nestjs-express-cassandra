@@ -26,8 +26,6 @@ const cassandraOptions: ExpressCassandraModuleOptions = {
     },
     migration: 'alter',
   },
-  retryAttempts: 3,
-  retryDelay: 1000,
 };
 
 @Module({
