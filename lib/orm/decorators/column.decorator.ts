@@ -9,22 +9,22 @@ export function Column(options: ColumnOptions): PropertyDecorator {
   };
 }
 
-export function PrimaryGeneratedColumn(
+export function GeneratedUUidColumn(
   type: 'uuid' | 'timeuuid' = 'uuid',
 ): PropertyDecorator {
   return (target: object, propertyName: string) => {
     const fn: PropertyDescriptor = {
       value: (...args: any[]) => {
         const instance = args[0];
-        if (!instance[propertyName]) {
-          instance[propertyName] = type === 'uuid' ? uuid() : timeuuid();
+        if (instance !== null && !instance[propertyName]) {
+          instance[propertyName] = type === 'timeuuid' ? timeuuid() : uuid();
         }
       },
     };
 
     Column({
       type,
-      default: { $db_function: type === 'uuid' ? 'uuid()' : 'now()' },
+      default: { $db_function: type === 'timeuuid' ? 'now()' : 'uuid()' },
     })(target, propertyName);
     BeforeSave()(target, propertyName, fn);
   };
