@@ -158,6 +158,126 @@ export class PersonService {
 }
 ```
 
+**Using Column Decorators:**
+To auto-generate uuid/timeuuid column, you need to decorate an entity's properties you want to make into a auto-generated 
+uuid/timeuuid column with a `@GeneratedUUidColumn` decorator.
+
+```typescript
+import { Entity, Column, GeneratedUUidColumn } from '@iaminfinity/express-cassandra';
+
+@Entity({
+  table_name: 'photo',
+  key: ['id'],
+})
+export class PhotoEntity {
+  @GeneratedUUidColumn()
+  id: any;
+
+  @GeneratedUUidColumn('timeuuid')
+  time_id: any;
+
+  @Column({
+    type: 'text',
+  })
+  name: string;
+}
+```
+To auto-generate createdDate/updatedDate column, you need to decorate an entity's properties you want to make into a auto-generated 
+createdDate/updatedDate column with a `@CreateDateColumn` or `@UpdateDateColumn` decorator.
+
+To index a column, you need to decorate an entity's properties you want to index with a `@IndexColumn` decorator.
+
+To auto-generate version column, you need to decorate an entity's properties you want to make into a auto-generated 
+version column with a `@VersionColumn` decorator.
+
+```typescript
+import { 
+  Entity,
+  Column,
+  GeneratedUUidColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  IndexColumn,
+  VersionColumn,
+} from '@iaminfinity/express-cassandra';
+
+@Entity({
+  table_name: 'photo',
+  key: ['id'],
+})
+export class PhotoEntity {
+  @GeneratedUUidColumn()
+  id: any;
+
+  @GeneratedUUidColumn('timeuuid')
+  time_id: any;
+
+  @Column({
+    type: 'text',
+  })
+  @IndexColumn()
+  name: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @VersionColumn()
+  __v1: any;
+}
+```
+
+**Using Hook Function Decorators:**
+An entity of express-cassandra support multiple hook function. For more details [see](https://express-cassandra.readthedocs.io/en/stable/management/#hook-functions).
+
+To create hook function in an entity use `@BeforeSave`, `@AfterSave`, `@BeforeUpdate`, `@AfterUpdate`, `@BeforeDelete`, `@AfterDelete` decorators.
+
+```typescript
+import { 
+  Entity,
+  Column,
+  GeneratedUUidColumn,
+  BeforeSave,
+  AfterSave,
+  BeforeUpdate,
+  AfterUpdate,
+  BeforeDelete,
+  AfterDelete,
+} from '@iaminfinity/express-cassandra';
+
+@Entity({
+  table_name: 'photo',
+  key: ['id'],
+})
+export class PhotoEntity {
+  @GeneratedUUidColumn()
+  id: any;
+
+  @GeneratedUUidColumn('timeuuid')
+  time_id: any;
+
+  @BeforeSave()
+  beforeSave(instance: this, options: any) {}
+
+  @AfterSave()
+  afterSave(instance: this, options: any) {}
+
+  @BeforeUpdate()
+  beforeUpdate(query: any, updateValues: any, options: any) {}
+
+  @AfterUpdate()
+  afterUpdate(query: any, updateValues: any, options: any) {}
+
+  @BeforeDelete()
+  beforeDelete(query: any, options: any) {}
+
+  @AfterDelete()
+  afterDelete(query: any, options: any) {}
+}
+```
+
 ## Using Repository
 
 ```typescript
