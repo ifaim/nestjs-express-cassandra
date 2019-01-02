@@ -1,18 +1,21 @@
-import { Entity, Column } from '@iaminfinity/express-cassandra';
+import {
+  Entity,
+  Column,
+  IndexColumn,
+  GeneratedUUidColumn,
+} from '@iaminfinity/express-cassandra';
 
 @Entity<DogEntity>({
   table_name: 'dog',
   key: ['id'],
 })
 export class DogEntity {
-  @Column({
-    type: 'uuid',
-    default: { $db_function: 'uuid()' },
-  })
+  @GeneratedUUidColumn()
   id: any;
 
   @Column({
     type: 'text',
   })
+  @IndexColumn()
   name: string;
 }

@@ -1,4 +1,8 @@
-import { Entity, Column } from '@iaminfinity/express-cassandra';
+import {
+  Entity,
+  Column,
+  GeneratedUUidColumn,
+} from '@iaminfinity/express-cassandra';
 
 @Entity({
   table_name: 'cats',
@@ -14,10 +18,7 @@ import { Entity, Column } from '@iaminfinity/express-cassandra';
   },
 })
 export class CatEntity {
-  @Column({
-    type: 'uuid',
-    default: { $db_function: 'uuid()' },
-  })
+  @GeneratedUUidColumn()
   id: any;
 
   @Column({

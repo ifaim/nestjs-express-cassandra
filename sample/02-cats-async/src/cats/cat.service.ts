@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { BaseModel, InjectModel, uuid } from '@iaminfinity/express-cassandra';
+import {
+  BaseModel,
+  InjectModel,
+  uuid,
+  InjectConnection,
+} from '@iaminfinity/express-cassandra';
 import { CatEntity } from './entities/cat.entity';
 import { CreateCatDto } from './dto/create-cat.dto';
 
 @Injectable()
 export class CatsService {
   constructor(
-    @InjectModel(CatEntity) private readonly catModel: BaseModel<CatEntity>,
+    @InjectConnection()
+    private readonly connection: any,
+    @InjectModel(CatEntity)
+    private readonly catModel: BaseModel<CatEntity>,
   ) {}
 
   async create(createCatDto: CreateCatDto): Promise<CatEntity> {

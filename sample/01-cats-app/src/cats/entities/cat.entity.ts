@@ -1,39 +1,27 @@
-import { Entity, Column, uuid, timeuuid } from '@iaminfinity/express-cassandra';
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  VersionColumn,
+  BeforeSave,
+  AfterSave,
+  IndexColumn,
+  GeneratedUUidColumn,
+} from '@iaminfinity/express-cassandra';
+import { Logger } from '@nestjs/common';
 
 @Entity({
   table_name: 'cats',
   // partition key = ['id']
   // clustering key = ['time_id']
   key: [['id'], 'time_id'],
-  options: {
-    timestamps: {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-    },
-    versions: {
-      key: '__v1',
-    },
-  },
-  before_save: (instance: CatEntity, options) => {
-    if (!instance.id) {
-      instance.id = uuid();
-    }
-    if (!instance.time_id) {
-      instance.id = timeuuid();
-    }
-  },
 })
 export class CatEntity {
-  @Column({
-    type: 'uuid',
-    default: () => uuid(),
-  })
+  @GeneratedUUidColumn()
   id: any;
 
-  @Column({
-    type: 'timeuuid',
-    default: { $db_function: 'now()' },
-  })
+  @GeneratedUUidColumn('timeuuid')
   time_id: any;
 
   @Column({
@@ -44,10 +32,30 @@ export class CatEntity {
   @Column({
     type: 'int',
   })
+  @IndexColumn()
   age: number;
 
   @Column({
     type: 'text',
   })
   breed: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @VersionColumn()
+  __v1: any;
+
+  @BeforeSave()
+  beforeSave(instance: this, options: any) {
+    Logger.log('Before save called', CatEntity.name);
+  }
+
+  @AfterSave()
+  afterSave(instance: this, options: any) {
+    Logger.log('After save called', CatEntity.name);
+  }
 }
