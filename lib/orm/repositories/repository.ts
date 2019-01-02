@@ -81,11 +81,23 @@ export class Repository<Entity = any> {
     options?: SaveOptionsStatic,
   ): Observable<Entity>;
 
-  save(entity: any, options = {}) {
-    const model = new this.model(entity);
-    return defer(() => model.saveAsync(options)).pipe(
-      map(() => transformEntity(this.target, model.toJSON())),
-    );
+  save<T extends Partial<Entity>>(
+    entities: T[],
+    options?: SaveOptionsStatic,
+  ): Observable<Entity[]>;
+
+  save(entityLike: any | any[], options = {}): Observable<any> {
+    const saveFunc = async entity => {
+      const model = new this.model(entity);
+      await model.saveAsync(options);
+      return transformEntity(this.target, model.toJSON());
+    };
+    const saveMultipleFunc = () =>
+      Promise.all(entityLike.map(x => saveFunc(x)));
+
+    return Array.isArray(entityLike)
+      ? defer(() => saveMultipleFunc())
+      : defer(() => saveFunc(entityLike));
   }
 
   update(
