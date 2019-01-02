@@ -61,8 +61,5 @@
     "node",
     "nodejs",
     "javascript"
-  ],
-  "engines": {
-    "node": ">=4.2.4"
-  }
+  ]
 }
