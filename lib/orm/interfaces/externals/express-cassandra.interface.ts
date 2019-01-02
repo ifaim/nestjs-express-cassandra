@@ -117,6 +117,8 @@ export interface BaseModel<T = any> {
 
   close(callback?: (err: Error) => void): void;
 
+  syncDB(callback?: (err: Error, result: boolean) => void);
+
   get_keyspace_name(): string;
 
   get_table_name(): string;

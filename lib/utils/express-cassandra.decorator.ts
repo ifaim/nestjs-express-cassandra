@@ -4,8 +4,7 @@ import {
   getRepositoryToken,
   getConnectionToken,
 } from './cassandra-orm.utils';
-import * as Connection from 'express-cassandra';
-import { ConnectionOptions } from '../interfaces';
+import { ConnectionOptions, Connection } from '../orm';
 
 export const InjectConnection: (
   connnection?: Connection | ConnectionOptions | string,

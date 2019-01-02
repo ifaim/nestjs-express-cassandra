@@ -4,12 +4,10 @@ import {
   getRepositoryToken,
 } from './utils/cassandra-orm.utils';
 import { defer } from 'rxjs';
-import { loadModel, Repository } from './orm';
+import { loadModel, Repository, ConnectionOptions, Connection } from './orm';
 import { getEntity } from './orm/utils/decorator.utils';
 import { Provider } from '@nestjs/common';
 import { RepositoryFactory } from './orm/repositories/repository.factory';
-import { ConnectionOptions } from './interfaces';
-import * as Connection from 'express-cassandra';
 
 export function createExpressCassandraProviders(
   entities?: Function[],

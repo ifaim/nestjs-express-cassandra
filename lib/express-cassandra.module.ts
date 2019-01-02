@@ -3,10 +3,9 @@ import { ExpressCassandraCoreModule } from './express-casandra-core.module';
 import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
-  ConnectionOptions,
 } from './interfaces';
 import { createExpressCassandraProviders } from './express-cassandra.providers';
-import * as Connection from 'express-cassandra';
+import { ConnectionOptions, Connection } from './orm';
 
 @Module({})
 export class ExpressCassandraModule {

@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
 import { delay, retryWhen, scan } from 'rxjs/operators';
 import { Logger } from '@nestjs/common';
-import * as Connection from 'express-cassandra';
-import { ConnectionOptions } from '../interfaces';
+import { ConnectionOptions, Connection } from '../orm';
 
 export function handleRetry(
   retryAttempts: number = 6,
@@ -54,6 +53,6 @@ export function getConnectionName(options: ConnectionOptions) {
   return options && options.name ? options.name : 'default';
 }
 
-// tslint:disable-next-line:no-bitwise
 export const generateString = () =>
+  // tslint:disable-next-line:no-bitwise
   [...Array(10)].map(i => ((Math.random() * 36) | 0).toString(36)).join;
