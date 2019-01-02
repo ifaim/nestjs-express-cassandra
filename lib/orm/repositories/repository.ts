@@ -115,13 +115,41 @@ export class Repository<Entity = any> {
     );
   }
 
+  remove(entity: Entity, options?: DeleteOptionsStatic): Observable<Entity>;
+
+  remove(entity: Entity[], options?: DeleteOptionsStatic): Observable<Entity[]>;
+
+  remove(
+    entityOrEntities: Entity | Entity[],
+    options: DeleteOptionsStatic = {},
+  ): Observable<Entity | Entity[]> {
+    const removeFunc = entity =>
+      new this.model(entity).deleteAsync({
+        ...defaultOptions.deleteOptions,
+        ...options,
+      });
+    const promiseArray =
+      entityOrEntities instanceof Array
+        ? entityOrEntities.map(x => removeFunc(x))
+        : [removeFunc(entityOrEntities)];
+
+    return defer(() => Promise.all(promiseArray)).pipe(
+      map(() => entityOrEntities),
+    );
+  }
+
   delete(
     query: FindQuery<Entity>,
     options?: DeleteOptionsStatic,
   ): Observable<any>;
 
   delete(query = {}, options = {}) {
-    return defer(() => this.model.deleteAsync(query, options));
+    return defer(() =>
+      this.model.deleteAsync(query, {
+        ...defaultOptions.deleteOptions,
+        ...options,
+      }),
+    );
   }
 
   truncate(): Observable<any> {
