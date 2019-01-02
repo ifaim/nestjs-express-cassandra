@@ -12,6 +12,7 @@ import { types } from 'cassandra-driver';
 import { Type } from '@nestjs/common';
 import { ReturnQueryBuilder } from './builder/return-query.builder';
 import { transformEntity } from '../utils/transform-entity.utils';
+import { EntityNotFoundError } from '../errors';
 
 const defaultOptions = {
   findOptions: { raw: true },
@@ -27,6 +28,7 @@ export class Repository<Entity = any> {
   readonly returnQueryBuilder: ReturnQueryBuilder<Entity>;
 
   create(entity?: Partial<Entity>): Entity;
+
   create(entityLikeArray: Partial<Entity>[]): Entity[];
 
   create(entityLike?: any): Entity | Entity[] {
@@ -38,7 +40,10 @@ export class Repository<Entity = any> {
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<Entity>;
 
-  findOne(query: any = {}, options: any = {}): Observable<Entity> {
+  findOne(
+    query: FindQuery<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<Entity> {
     return defer(() =>
       this.model.findOneAsync(query, {
         ...options,
@@ -47,12 +52,34 @@ export class Repository<Entity = any> {
     ).pipe(map(x => x && transformEntity(this.target, x)));
   }
 
+  findOneOrFail(
+    query: FindQuery<Entity>,
+    options?: FindQueryOptionsStatic<Entity>,
+  ): Observable<Entity>;
+
+  findOneOrFail(
+    query: FindQuery<Entity>,
+    maybeOptions: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<Entity> {
+    return this.findOne(query, maybeOptions).pipe(
+      map(entity => {
+        if (entity === undefined) {
+          throw new EntityNotFoundError(this.target, query);
+        }
+        return entity;
+      }),
+    );
+  }
+
   find(
     query: FindQuery<Entity>,
     options?: FindQueryOptionsStatic<Entity>,
   ): Observable<Entity[]>;
 
-  find(query: any = {}, options: any = {}) {
+  find(
+    query: FindQuery<Entity>,
+    options: FindQueryOptionsStatic<Entity> = {},
+  ): Observable<Entity[]> {
     return defer(() =>
       this.model.findAsync(query, {
         ...options,
@@ -76,28 +103,31 @@ export class Repository<Entity = any> {
     );
   }
 
-  save<T extends Partial<Entity>>(
-    entity: T,
+  save(
+    entity: Partial<Entity>,
     options?: SaveOptionsStatic,
   ): Observable<Entity>;
 
-  save<T extends Partial<Entity>>(
-    entities: T[],
+  save(
+    entities: Partial<Entity>[],
     options?: SaveOptionsStatic,
   ): Observable<Entity[]>;
 
-  save(entityLike: any | any[], options = {}): Observable<any> {
+  save(
+    entityLike: Partial<Entity> | Partial<Entity>[],
+    options: SaveOptionsStatic = {},
+  ): Observable<Entity> | Observable<Entity[]> {
     const saveFunc = async entity => {
       const model = new this.model(entity);
       await model.saveAsync(options);
       return transformEntity(this.target, model.toJSON());
     };
-    const saveMultipleFunc = () =>
-      Promise.all(entityLike.map(x => saveFunc(x)));
+    const saveMultipleFunc = (arrayLike: Entity[]) =>
+      Promise.all(arrayLike.map(x => saveFunc(x)));
 
     return Array.isArray(entityLike)
-      ? defer(() => saveMultipleFunc())
-      : defer(() => saveFunc(entityLike));
+      ? defer(() => saveMultipleFunc(entityLike as any))
+      : defer(() => saveFunc(entityLike as any));
   }
 
   update(
@@ -106,7 +136,11 @@ export class Repository<Entity = any> {
     options?: UpdateOptionsStatic<Entity>,
   ): Observable<any>;
 
-  update(query = {}, updateValue, options = {}) {
+  update(
+    query: FindQuery<Entity>,
+    updateValue: Partial<Entity>,
+    options: UpdateOptionsStatic<Entity> = {},
+  ): Observable<any> {
     return defer(() =>
       this.model.updateAsync(query, updateValue, {
         ...defaultOptions.updateOptions,
