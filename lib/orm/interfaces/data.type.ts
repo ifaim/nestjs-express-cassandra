@@ -22,6 +22,7 @@ export type CassandraType =
   | 'inet'
   | 'time'
   | 'tuple'
+  | 'frozen'
   | 'blob';
 
 export type WithWidthColumnType =
