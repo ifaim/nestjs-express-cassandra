@@ -1,7 +1,7 @@
 import { ColumnOptions } from '../interfaces';
 import { addAttribute, addOptions, getOptions } from '../utils/decorator.utils';
 import { BeforeSave } from './listeners';
-import { uuid, timeuuid } from '../../';
+import { uuid, timeuuid } from '../utils/db.utils';
 
 export function Column(options: ColumnOptions): PropertyDecorator {
   return (target: object, propertyName: string) => {

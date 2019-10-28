@@ -12,7 +12,6 @@ import {
   ExpressCassandraModuleOptions,
   ExpressCassandraModuleAsyncOptions,
   ExpressCassandraOptionsFactory,
-  ConnectionOptions,
 } from './interfaces';
 import {
   EXPRESS_CASSANDRA_MODULE_OPTIONS,
@@ -25,7 +24,7 @@ import {
 } from './utils/cassandra-orm.utils';
 import { defer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as Connection from 'express-cassandra';
+import { ConnectionOptions, Connection } from './orm';
 
 @Global()
 @Module({})
@@ -134,6 +133,7 @@ export class ExpressCassandraCoreModule implements OnModuleDestroy {
   ): Promise<Connection> {
     const { retryAttempts, retryDelay, ...cassandraOptions } = options;
     const connection = new Connection(cassandraOptions);
+
     return await defer(() => connection.initAsync())
       .pipe(
         handleRetry(retryAttempts, retryDelay),

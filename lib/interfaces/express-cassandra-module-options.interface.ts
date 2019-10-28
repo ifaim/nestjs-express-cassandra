@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
-import { ConnectionOptions } from './express-cassandra-client-options.interface';
+import { ConnectionOptions } from '../orm';
 
 export type ExpressCassandraModuleOptions = {
   retryAttempts?: number;

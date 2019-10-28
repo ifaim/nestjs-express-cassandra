@@ -371,6 +371,30 @@ export class PersonService {
 }
 ```
 
+Injecting connection:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { InjectRepository, InjectConnection } from '@iaminfinity/express-cassandra';
+import { PhotoEntity } from './photo.entity';
+import { PhotoRepository } from './photo.repository';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class PersonService {
+  constructor(
+    @InjectConnection()
+    private readonly connection: Connection,
+    @InjectRepository(PhotoRepository)
+    private readonly photoRepository: PhotoRepository,
+  ) {}
+
+  getById(id: any): Observable<PhotoEntity> {
+    return this.photoRepository.findById(id);
+  }
+}
+```
+
 ## Using Elassandra
 Express cassandra support `Elassandra`. For more details [see](https://express-cassandra.readthedocs.io/en/stable/elassandra/).
 
