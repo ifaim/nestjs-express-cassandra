@@ -1,13 +1,13 @@
 import { FindSubQueryStatic } from './externals/express-cassandra.interface';
 
-export interface EntityOptions<T = any> {
+export interface EntityOptions<T = object> {
   table_name?: string;
 
   key?: Array<keyof T | Array<keyof T>>;
 
   materialized_views?: { [index: string]: MaterializeViewStatic<T> };
 
-  clustering_order?: Partial<{ [P in keyof T]: 'desc' | 'asc' }>;
+  clustering_order?: { [index: string]: 'desc' | 'asc' };
 
   options?: EntityExtraOptions;
 
@@ -30,7 +30,7 @@ export interface EntityOptions<T = any> {
   [index: string]: any;
 }
 
-export type ClusterOrder<T> = Partial<{ [P in keyof T]: 'desc' | 'asc' }>;
+export type ClusterOrder<T = any> = { [P in keyof T]?: 'desc' | 'asc' };
 
 export interface MaterializeViewStatic<T> {
   select?: Array<keyof T>;
