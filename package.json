@@ -46,8 +46,8 @@
     ]
   },
   "dependencies": {
-    "cassandra-driver": "4.5.2",
-    "github:ouato/express-cassandra": "2.3.2",
+    "@ouato/express-cassandra": "file:../express-cassandra",
+    "cassandra-driver": "^4.5.2",
     "merge-deep": "3.0.2"
   },
   "keywords": [

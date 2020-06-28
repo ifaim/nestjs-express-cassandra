@@ -13,7 +13,7 @@ export interface ClientOptionsStatic {
 export interface OrmOptionsStatic {
   defaultReplicationStrategy?: {
     class?: 'SimpleStrategy' | 'NetworkTopologyStrategy';
-
+    'caas-dc'?: number;
     replication_factor?: number;
   };
 
