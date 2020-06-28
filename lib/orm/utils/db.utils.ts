@@ -17,7 +17,7 @@ export const isTimeUuid = (id: any): boolean =>
 
 export const timeuuid = (idOrDate?: string | Date): types.TimeUuid => {
   if (!idOrDate) {
-    return new types.TimeUuid();
+    return types.TimeUuid.now();
   }
   if (typeof idOrDate === 'string') {
     return types.TimeUuid.fromString(idOrDate);
