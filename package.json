@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "@ouato/express-cassandra": "file:../express-cassandra",
+    "@ouato/express-cassandra": "^2.3.3",
     "cassandra-driver": "^4.5.2",
     "merge-deep": "3.0.2"
   },
