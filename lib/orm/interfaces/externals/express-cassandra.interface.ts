@@ -234,7 +234,7 @@ export interface FindQueryStatic<T> {
 export interface FindSubQueryStatic {
   $token?: any;
 
-  $in?: string[];
+  $in?: any[];
 
   $like?: string;
 
