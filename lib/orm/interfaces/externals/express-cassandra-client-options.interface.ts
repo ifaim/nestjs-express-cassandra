@@ -14,6 +14,7 @@ export interface OrmOptionsStatic {
   defaultReplicationStrategy?: {
     class?: 'SimpleStrategy' | 'NetworkTopologyStrategy';
     'caas-dc'?: number;
+    'europe-west1'?: number;
     replication_factor?: number;
   };
 
