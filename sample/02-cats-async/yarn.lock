@@ -18,14 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@iaminfinity/express-cassandra@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@iaminfinity/express-cassandra/-/express-cassandra-5.0.0.tgz#b9e4bf770c4352f09d0fd710957826f7bea80d47"
-  integrity sha512-eJ/Gm2AvAQMg/7phY4Aods14sjwVsAU5pjOqPYyCbq/th813hOD8CAACa9rd3z6RLzd/vTe1mBCS7BT00KarMQ==
+"@iaminfinity/express-cassandra@^5.0.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@iaminfinity/express-cassandra/-/express-cassandra-5.2.0.tgz#06ebba8f045e8f69d801ae15a821223f5d39b6b8"
+  integrity sha512-bsCHsX/GrYfB53WhulfQ8+6sn9zAFuHDXZXzZJLOJ8usttse0KwsQlNbC0BwuF2rQPIczY8Q1EjTTwq6piBEyA==
   dependencies:
-    "@types/cassandra-driver" "^3.4.0"
-    express-cassandra "^2.2.4"
-    merge-deep "^3.0.2"
+    "@types/cassandra-driver" "3.6.0"
+    express-cassandra "2.3.2"
+    merge-deep "3.0.2"
 
 "@nestjs/common@^5.5.0":
   version "5.5.0"
@@ -97,10 +97,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/cassandra-driver@^3.4.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@types/cassandra-driver/-/cassandra-driver-3.5.0.tgz#b4606a092ce495dd544ccee6c1ee8bc65e4a4789"
-  integrity sha512-wrNi+fz91/g0YOfkkkMgNuSRnaXaw597z548IY7GauaPjTtM0thqpKRgJy8fKT6Q5ZXhVp0wQ/1ANROpniHUvg==
+"@types/cassandra-driver@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@types/cassandra-driver/-/cassandra-driver-3.6.0.tgz#23e045bdb19591e366308e6a0da04639fe037778"
+  integrity sha512-Xx4XRuJUV1h1kNBRI78VSrporvBgzvwOtvo9AFic3EBdSk1EC8Gqr41WkMw7My/XVt0R9ux3z+Gyk9LgfEs/XA==
   dependencies:
     "@types/long" "*"
     "@types/node" "*"
@@ -1671,10 +1671,10 @@ expect@^23.6.0:
     jest-message-util "^23.4.0"
     jest-regex-util "^23.3.0"
 
-express-cassandra@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/express-cassandra/-/express-cassandra-2.2.4.tgz#4028368849c6aad370c48f8adc73dea2fd20224c"
-  integrity sha512-mFU3RtmIjn4AL1W3C22U3VLKs1s1UbshVNr+/Hj1bHK7+79MP5jdrWLJbTY0nbOw7VuFYVce1rPv1ouqgCvBmA==
+express-cassandra@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/express-cassandra/-/express-cassandra-2.3.2.tgz#edf744da7e2522395ca0219a684812d7da4a53c3"
+  integrity sha512-Bte+Ks6teFpnlPLcniyOwyML+emvbynergI1hFGrT1ukn47MEDANNzBeYHtThhPXGTCxCLgI8udAn8O0P8oyVw==
   dependencies:
     JSONStream "^1.3.1"
     async "^1.5.2"
@@ -1685,7 +1685,7 @@ express-cassandra@^2.2.4:
     check-types "^7.4.0"
     debug "^3.1.0"
     deep-diff "^0.3.4"
-    lodash "^4.17.10"
+    lodash "^4.17.15"
     object-hash "1.1.4"
     readdirp "^2.1.0"
     readline-sync "^1.4.4"
@@ -3258,6 +3258,11 @@ lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
+lodash@^4.17.15:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
 long@^2.2.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/long/-/long-2.4.0.tgz#9fa180bb1d9500cdc29c4156766a1995e1f4524f"
@@ -3360,7 +3365,7 @@ memory-fs@^0.4.0:
     errno "^0.1.3"
     readable-stream "^2.0.1"
 
-merge-deep@^3.0.2:
+merge-deep@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/merge-deep/-/merge-deep-3.0.2.tgz#f39fa100a4f1bd34ff29f7d2bf4508fbb8d83ad2"
   integrity sha512-T7qC8kg4Zoti1cFd8Cr0M+qaZfOwjlPDEdZIIPPB2JZctjaPM4fX+i7HOId69tAti2fvO6X5ldfYUONDODsrkA==
@@ -3963,9 +3968,9 @@ path-key@^2.0.0:
   integrity sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A=
 
 path-parse@^1.0.5, path-parse@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
-  integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
+  integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
 path-to-regexp@0.1.7:
   version "0.1.7"
@@ -5052,10 +5057,10 @@ ts-jest@^23.1.3:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-loader@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-5.3.1.tgz#70614c8ec4354a9c8b89c9f97b2becb7a98a3980"
-  integrity sha512-fDDgpBH3SR8xlt2MasLdz3Yy611PQ/UY/KGyo7TgXhTRU/6sS8uGG0nJYnU1OdFBNKcoYbId1UTNaAOUn+i41g==
+ts-loader@^5.3.2:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-5.4.5.tgz#a0c1f034b017a9344cef0961bfd97cc192492b8b"
+  integrity sha512-XYsjfnRQCBum9AMRZpk2rTYSVpdZBpZK+kDh0TeT3kxmQNBDVIeUjdPjY5RZry4eIAb8XHc4gYSUiUWPYvzSRw==
   dependencies:
     chalk "^2.3.0"
     enhanced-resolve "^4.0.0"
