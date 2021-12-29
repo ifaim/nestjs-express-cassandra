@@ -1,7 +1,7 @@
 import { ConnectionOptions } from './express-cassandra-client-options.interface';
 import { types } from 'cassandra-driver';
 import { BaseModel } from './express-cassandra.interface';
-import * as Cassandra from '@ouato/express-cassandra';
+import * as Cassandra from 'express-cassandra';
 
 export interface Connection extends FunctionConstructor {
   uuid(): types.Uuid;
