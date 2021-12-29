@@ -1,6 +1,6 @@
 {
   "name": "@ouato/nestjs-express-cassandra",
-  "version": "6.0.6",
+  "version": "6.0.7",
   "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
   "author": {
     "name": "Ouato",
@@ -17,9 +17,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ifaim/nestjs-express-cassandra.git"
+    "url": "git@github.com:ouato/nestjs-express-cassandra.git"
   },
-  "homepage": "https://github.com/ifaim/nestjs-express-cassandra",
+  "homepage": "https://github.com/ouato/nestjs-express-cassandra",
   "peerDependencies": {
     "@nestjs/common": "^8.2.4",
     "@nestjs/core": "^8.2.4",
