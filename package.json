@@ -1,6 +1,6 @@
 {
   "name": "@ouato/nestjs-express-cassandra",
-  "version": "6.0.3",
+  "version": "6.0.8",
   "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
   "author": {
     "name": "Ouato",
@@ -17,24 +17,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ifaim/nestjs-express-cassandra.git"
+    "url": "git@github.com:ouato/nestjs-express-cassandra.git"
   },
-  "homepage": "https://github.com/ifaim/nestjs-express-cassandra",
+  "homepage": "https://github.com/ouato/nestjs-express-cassandra",
   "peerDependencies": {
-    "@nestjs/common": "^7.6.15",
-    "@nestjs/core": "^7.6.15",
+    "@nestjs/common": "^8.2.4",
+    "@nestjs/core": "^8.2.4",
     "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.0.0"
+    "rxjs": "^7.1.0"
   },
   "devDependencies": {
-    "@nestjs/common": "7.6.15",
-    "@nestjs/core": "7.6.15",
+    "@nestjs/common": "^8.2.4",
+    "@nestjs/core": "^8.2.4",
     "@types/node": "10.12.18",
     "husky": "3.0.9",
-    "lint-staged": "9.4.2",
+    "lint-staged": "^12.1.4",
     "prettier": "1.18.2",
     "reflect-metadata": "0.1.13",
-    "rxjs": "6.5.3",
+    "rxjs": "^7.1.0",
     "tslint": "5.20.0",
     "typescript": "3.6.4"
   },
@@ -45,9 +45,9 @@
     ]
   },
   "dependencies": {
-    "@ouato/express-cassandra": "^2.3.3",
     "cassandra-driver": "^4.5.2",
-    "merge-deep": "3.0.2"
+    "express-cassandra": "^2.7.0",
+    "merge-deep": "^3.0.3"
   },
   "keywords": [
     "nestjs",
