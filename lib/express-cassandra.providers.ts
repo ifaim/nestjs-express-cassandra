@@ -8,11 +8,12 @@ import { loadModel, Repository, ConnectionOptions, Connection } from './orm';
 import { getEntity } from './orm/utils/decorator.utils';
 import { Provider } from '@nestjs/common';
 import { RepositoryFactory } from './orm/repositories/repository.factory';
+import { EntityClass } from './interfaces/entity-class.type';
 
 export function createExpressCassandraProviders(
-  entities?: Function[],
+  entities?: EntityClass[],
   connection?: Connection | ConnectionOptions | string,
-) {
+): Provider[] {
   const providerModel = entity => ({
     provide: getModelToken(entity),
     useFactory: async (connectionLike: Connection) => {

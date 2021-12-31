@@ -2,18 +2,16 @@
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
-    "strict": true,
     "removeComments": false,
     "noLib": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "dom", "es2017"],
     "target": "es6",
-    "sourceMap": false,
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./lib",
     "skipLibCheck": true,
-    "strictPropertyInitialization": false,
     "noImplicitAny": false
   },
   "include": [
