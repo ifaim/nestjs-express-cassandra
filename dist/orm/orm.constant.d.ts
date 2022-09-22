@@ -1,0 +1,11 @@
+export declare const ENTITY_METADATA = "__enity__";
+export declare const COLUMN_METADATA = "__column__";
+export declare const ENTITY_NAME_KEY = "cassandra:entityName";
+export declare const ATTRUBUTE_KEY = "cassandra:attributes";
+export declare const OPTIONS_KEY = "cassandra:options";
+export declare const BEFORE_SAVE: string;
+export declare const AFTER_SAVE: string;
+export declare const BEFORE_UPDATE: string;
+export declare const AFTER_UPDATE: string;
+export declare const BEFORE_DELETE: string;
+export declare const AFTER_DELETE: string;
