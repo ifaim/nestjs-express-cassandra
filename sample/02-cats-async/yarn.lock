@@ -18,14 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@iaminfinity/express-cassandra@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@iaminfinity/express-cassandra/-/express-cassandra-5.0.0.tgz#b9e4bf770c4352f09d0fd710957826f7bea80d47"
-  integrity sha512-eJ/Gm2AvAQMg/7phY4Aods14sjwVsAU5pjOqPYyCbq/th813hOD8CAACa9rd3z6RLzd/vTe1mBCS7BT00KarMQ==
+"@iaminfinity/express-cassandra@^5.0.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@iaminfinity/express-cassandra/-/express-cassandra-5.2.0.tgz#06ebba8f045e8f69d801ae15a821223f5d39b6b8"
+  integrity sha512-bsCHsX/GrYfB53WhulfQ8+6sn9zAFuHDXZXzZJLOJ8usttse0KwsQlNbC0BwuF2rQPIczY8Q1EjTTwq6piBEyA==
   dependencies:
-    "@types/cassandra-driver" "^3.4.0"
-    express-cassandra "^2.2.4"
-    merge-deep "^3.0.2"
+    "@types/cassandra-driver" "3.6.0"
+    express-cassandra "2.3.2"
+    merge-deep "3.0.2"
 
 "@nestjs/common@^5.5.0":
   version "5.5.0"
@@ -97,10 +97,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/cassandra-driver@^3.4.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@types/cassandra-driver/-/cassandra-driver-3.5.0.tgz#b4606a092ce495dd544ccee6c1ee8bc65e4a4789"
-  integrity sha512-wrNi+fz91/g0YOfkkkMgNuSRnaXaw597z548IY7GauaPjTtM0thqpKRgJy8fKT6Q5ZXhVp0wQ/1ANROpniHUvg==
+"@types/cassandra-driver@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@types/cassandra-driver/-/cassandra-driver-3.6.0.tgz#23e045bdb19591e366308e6a0da04639fe037778"
+  integrity sha512-Xx4XRuJUV1h1kNBRI78VSrporvBgzvwOtvo9AFic3EBdSk1EC8Gqr41WkMw7My/XVt0R9ux3z+Gyk9LgfEs/XA==
   dependencies:
     "@types/long" "*"
     "@types/node" "*"
@@ -192,6 +192,11 @@
   integrity sha512-GibTh4OTkal71btYe2fpZP/rVHIPnnUsYphEaoywVHo+mo2a/LhlOFkIm5wdN0H0DA0Hx8x+tKgCYMD9elHu5w==
   dependencies:
     "@types/superagent" "*"
+
+"@types/validator@^13.7.10":
+  version "13.7.10"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.7.10.tgz#f9763dc0933f8324920afa9c0790308eedf55ca7"
+  integrity sha512-t1yxFAR2n0+VO6hd/FJ9F2uezAZVWHLmpmlJzm1eX03+H7+HsuTAp7L8QJs+2pQCfWkP1+EXsGK9Z9v7o/qPVQ==
 
 JSONStream@^1.3.1:
   version "1.3.5"
@@ -965,13 +970,14 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-class-validator@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.9.1.tgz#d60e58c5d14abca0a41bce38cf792ad4c46d1531"
-  integrity sha512-3wApflrd3ywVZyx4jaasGoFt8pmo4aGLPPAEKCKCsTRWVGPilahD88q3jQjRQwja50rl9a7rsP5LAxJYwGK8/Q==
+class-validator@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.14.0.tgz#40ed0ecf3c83b2a8a6a320f4edb607be0f0df159"
+  integrity sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==
   dependencies:
-    google-libphonenumber "^3.1.6"
-    validator "10.4.0"
+    "@types/validator" "^13.7.10"
+    libphonenumber-js "^1.10.14"
+    validator "^13.7.0"
 
 cli-boxes@^1.0.0:
   version "1.0.0"
@@ -1671,10 +1677,10 @@ expect@^23.6.0:
     jest-message-util "^23.4.0"
     jest-regex-util "^23.3.0"
 
-express-cassandra@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/express-cassandra/-/express-cassandra-2.2.4.tgz#4028368849c6aad370c48f8adc73dea2fd20224c"
-  integrity sha512-mFU3RtmIjn4AL1W3C22U3VLKs1s1UbshVNr+/Hj1bHK7+79MP5jdrWLJbTY0nbOw7VuFYVce1rPv1ouqgCvBmA==
+express-cassandra@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/express-cassandra/-/express-cassandra-2.3.2.tgz#edf744da7e2522395ca0219a684812d7da4a53c3"
+  integrity sha512-Bte+Ks6teFpnlPLcniyOwyML+emvbynergI1hFGrT1ukn47MEDANNzBeYHtThhPXGTCxCLgI8udAn8O0P8oyVw==
   dependencies:
     JSONStream "^1.3.1"
     async "^1.5.2"
@@ -1685,7 +1691,7 @@ express-cassandra@^2.2.4:
     check-types "^7.4.0"
     debug "^3.1.0"
     deep-diff "^0.3.4"
-    lodash "^4.17.10"
+    lodash "^4.17.15"
     object-hash "1.1.4"
     readdirp "^2.1.0"
     readline-sync "^1.4.4"
@@ -2046,11 +2052,6 @@ globals@^9.18.0:
   version "9.18.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.18.0.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
   integrity sha512-S0nG3CLEQiY/ILxqtztTWH/3iRRdyBLw6KMDxnKMchrtbj2OFmehVh0WUCfW3DUrIgx/qFrJPICrq4Z4sTR9UQ==
-
-google-libphonenumber@^3.1.6:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/google-libphonenumber/-/google-libphonenumber-3.2.1.tgz#0395f7099ba05012abad78685955e8ba5cdd6373"
-  integrity sha512-SUE8hWi8sJSK00NSuD+lJWVUNJtmoHRjXlAcN6dR3kTc4HYY7rey6/LfOC6COW8Wup07Fup1p0Tao57liq9HRA==
 
 got@^6.7.1:
   version "6.7.1"
@@ -3215,6 +3216,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libphonenumber-js@^1.10.14:
+  version "1.10.18"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.18.tgz#657c419071c8a02c638c0e80d9ee1232f152f280"
+  integrity sha512-NS4ZEgNhwbcPz1gfSXCGFnQm0xEiyTSPRthIuWytDzOiEG9xnZ2FbLyfJC4tI2BMAAXpoWbNxHYH75pa3Dq9og==
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -3257,6 +3263,11 @@ lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
+
+lodash@^4.17.15:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 long@^2.2.0:
   version "2.4.0"
@@ -3360,7 +3371,7 @@ memory-fs@^0.4.0:
     errno "^0.1.3"
     readable-stream "^2.0.1"
 
-merge-deep@^3.0.2:
+merge-deep@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/merge-deep/-/merge-deep-3.0.2.tgz#f39fa100a4f1bd34ff29f7d2bf4508fbb8d83ad2"
   integrity sha512-T7qC8kg4Zoti1cFd8Cr0M+qaZfOwjlPDEdZIIPPB2JZctjaPM4fX+i7HOId69tAti2fvO6X5ldfYUONDODsrkA==
@@ -5052,10 +5063,10 @@ ts-jest@^23.1.3:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-loader@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-5.3.1.tgz#70614c8ec4354a9c8b89c9f97b2becb7a98a3980"
-  integrity sha512-fDDgpBH3SR8xlt2MasLdz3Yy611PQ/UY/KGyo7TgXhTRU/6sS8uGG0nJYnU1OdFBNKcoYbId1UTNaAOUn+i41g==
+ts-loader@^5.3.2:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-5.4.5.tgz#a0c1f034b017a9344cef0961bfd97cc192492b8b"
+  integrity sha512-XYsjfnRQCBum9AMRZpk2rTYSVpdZBpZK+kDh0TeT3kxmQNBDVIeUjdPjY5RZry4eIAb8XHc4gYSUiUWPYvzSRw==
   dependencies:
     chalk "^2.3.0"
     enhanced-resolve "^4.0.0"
@@ -5286,10 +5297,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@10.4.0:
-  version "10.4.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-10.4.0.tgz#ee99a44afb3bb5ed350a159f056ca72a204cfc3c"
-  integrity sha512-Q/wBy3LB1uOyssgNlXSRmaf22NxjvDNZM2MtIQ4jaEOAB61xsh1TQxsq1CgzUMBV1lDrVMogIh8GjG1DYW0zLg==
+validator@^13.7.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.7.0.tgz#4f9658ba13ba8f3d82ee881d3516489ea85c0857"
+  integrity sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
