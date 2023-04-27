@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Nest.js module containing useful utilities and decorators for [express-cassandra](https://github.com/masumsoft/express-cassandra).
+  Nest.js module containing useful utilities and decorators for <a href="https://github.com/masumsoft/express-cassandra">express-cassandra</a>
 </p>
 
 ## TLDR moving from `nestjs-express-cassandra`
@@ -33,7 +33,7 @@ And you're done. Incrementally and in new code, use the `@liliana1110/nest-cassa
 
 ## :warning: Deprecation of the `Express` prefix
 
-Currently, to support drop-in replacement from the (seemingly) unmaintained packgae [nestjs-express-cassandra](https://github.com/ifaim/nestjs-express-cassandra), the `CassandraModule` module is still available as `ExpressCassandraModule` (likewise for other `Express` prefixed objects/types), however they are considered deprecated and will drop in 7.x in favor of omitting a prefix altogethers (instead using `CassandraModule*`)!
+Currently, to support drop-in replacement from the (seemingly) unmaintained package [nestjs-express-cassandra](https://github.com/ifaim/nestjs-express-cassandra), the `CassandraModule` module is still available as `ExpressCassandraModule` (likewise for other `Express` prefixed objects/types), however they are considered deprecated and will drop in 7.x in favor of omitting a prefix altogethers (instead using `CassandraModule*`)!
 
 ## Installation
 
