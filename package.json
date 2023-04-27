@@ -1,12 +1,31 @@
 {
-  "name": "@iaminfinity/express-cassandra",
-  "version": "6.0.0",
-  "description": "Nest - modern, fast, powerful node.js web framework (@express-cassandra)",
-  "author": {
-    "name": "Fahim Rahman",
-    "email": "faim.sust@gmail.com",
-    "url": "https://github.com/ifaim"
+  "name": "@liliana1110/nest-cassandra",
+  "version": "6.1.0",
+  "description": "Updated fork of nestjs-express-cassandra with ScyllaDB support (express-cassandra 2.9.x)",
+  "authors": [
+    {
+      "name": "Mia Vališová",
+      "email": "lilianalillyy@gmail.com"
+    },
+    {
+      "name": "Fahim Rahman",
+      "email": "faim.sust@gmail.com",
+      "url": "https://github.com/ifaim"
+    }
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.ts",
+      "require": "./dist/index.js"
+    },
+    "./src/*": "./src/*",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
   },
+  "packageManager": "pnpm@8.1.1",
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
@@ -15,44 +34,23 @@
     "publish:npm": "npm publish --access public",
     "prepublish:next": "npm run build",
     "publish:next": "npm publish --access public --tag next",
-    "lint": "tslint -p tsconfig.json -c tslint.json"
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "preinstall": "npx only-allow pnpm"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ifaim/nestjs-express-cassandra.git"
+    "url": "git@github.com:ifaim/nest-cassandra.git"
   },
-  "homepage": "https://github.com/ifaim/nestjs-express-cassandra",
-  "peerDependencies": {
-    "@nestjs/common": "^6.7.0",
-    "@nestjs/core": "^6.7.0",
-    "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.0.0"
-  },
-  "devDependencies": {
-    "@nestjs/common": "6.8.5",
-    "@nestjs/core": "6.8.5",
-    "@types/node": "10.12.18",
-    "husky": "3.0.9",
-    "lint-staged": "9.4.2",
-    "prettier": "1.18.2",
-    "reflect-metadata": "0.1.13",
-    "rxjs": "6.5.3",
-    "tslint": "5.20.0",
-    "typescript": "3.6.4"
-  },
+  "homepage": "https://github.com/lilianalillyy/nest-cassandra",
   "lint-staged": {
     "*.ts": [
       "prettier --write",
       "git add"
     ]
   },
-  "dependencies": {
-    "@types/cassandra-driver": "3.6.0",
-    "express-cassandra": "2.3.2",
-    "merge-deep": "3.0.2"
-  },
   "keywords": [
     "nestjs",
+    "nest",
     "cassandra",
     "apache-cassandra",
     "datastax",
@@ -60,6 +58,35 @@
     "express-cassandra",
     "node",
     "nodejs",
-    "javascript"
-  ]
+    "javascript",
+    "typescript"
+  ],
+  "peerDependencies": {
+    "@nestjs/common": "^9.4.0",
+    "@nestjs/core": "^9.4.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "cassandra-driver": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.1",
+    "@nestjs/common": "^9.4.0",
+    "@nestjs/core": "^9.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "cassandra-driver": "^4.6.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "express-cassandra": "^2.9.0",
+    "merge-deep": "^3.0.3"
+  }
 }
